@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+    <link rel="stylesheet" href="bower_components/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/morris.js/morris.css">
+	</head>
+<body>
+<div class="wrapper">
+<div class="content-wrapper">
+   
+  <section class="content">
+		<div class="row">
+		<div class="col-md-6">
+          
+          <!-- BAR CHART -->
+          <div class="box box-success">
+            
+            <div class="box-body chart-responsive">
+              <div class="chart" id="bar-chart" style="height: 300px;"></div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+   
+  </div>
+
+
+</div>
+
+
+<!-- jQuery 3 -->
+<script src="bower_components/jquery.min.js"></script>
+<script src="bower_components/raphael.min.js"></script>
+<script src="bower_components/morris.js/morris.min.js"></script>
+
+<script>
+  $(function () {
+    var bar = new Morris.Bar({
+      element: 'bar-chart',
+      resize: true,
+      data: [
+        {y: '2006', a: 100, b: 90, c: 40},
+        {y: '2007', a: 75, b: 65},
+        {y: '2008', a: 50, b: 40},
+        {y: '2009', a: 75, b: 65},
+        {y: '2010', a: 50, b: 40},
+        {y: '2011', a: 75, b: 65},
+        {y: '2012', a: 100, b: 90}
+		
+      ],
+      barColors: ['#00a65a','#f56954','#f26958'],
+      xkey: 'y',
+      ykeys: ['a', 'b','c'],
+      labels: ['CPU', 'DISK', 'TEST'],
+      hideHover: 'auto'
+    });
+  });
+</script>
+</body>
+</html>

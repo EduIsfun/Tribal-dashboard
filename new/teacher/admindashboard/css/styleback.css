@@ -1,0 +1,230 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	background:#7cb600;
+	height:100%;
+}
+a:hover, a:focus {
+    color: #2a649600;
+    text-decoration: underline;
+}
+/** header**/
+.navbar-header {
+    float: right;
+}
+.nav.navbar-nav {
+    margin-top: 15px;
+	padding-right: 15px;
+}
+.navbar-toggle {
+    position: relative;
+    float: right;
+    padding: 9px 10px;
+    margin-top: 25px;
+    margin-left: 15px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    border-radius: 4px;
+}
+.navbar-default h2 {
+    display: inline-block;
+    background: #006ab6;
+    position: absolute;
+    color: #fff;
+    padding: 15px 35px;
+    left: -16px;
+    top: -20px;
+    border-bottom-right-radius: 60px;
+
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #006ab6;
+    background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+    font-size: 20px;
+	 padding: 15px 0;
+}
+.navbar-nav > li > a::after {
+    content: "|";
+	margin: 0 15px;
+}
+
+.navbar-nav li:last-child a::after { 
+    content: none;
+    margin: 0 15px; 
+}
+
+.navbar-default {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/** dashboard **/
+.main_head { 
+    color: #fff;
+    margin: 0;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: transparent;
+  background-image: none;
+}
+/* Custom Select */
+.select {
+  position: relative;
+  display: block;
+  width: 15em;
+  height: 3em;
+  line-height: 3;
+  background: overflow;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #444444;
+}
+select {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0px 20px;
+  color: #434343;
+  cursor: pointer;
+}
+select::-ms-expand {
+  display: none;
+}
+::before, ::after {
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+::before, ::after {
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+
+select:focus {
+	background: #dfdfdfb3;
+	color: #000;
+}
+
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 1em;
+  background: transparent;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after{
+  color: #f39c12;
+}
+.select:focus::after { 
+    color: #fff;
+}
+.select::after {
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+.Section-1 {
+    background: #fff;
+    margin-top: 15px;
+   padding: 15px;
+   border-radius: 10px;
+   margin-bottom: 15px;
+}
+.button-inline {
+    list-style: none;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: row wrap;
+}
+
+::before, ::after {
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+ 
+.button-inline li {
+padding: 5px;
+width: 1px;
+margin-top: 10px;
+text-align: center;
+display: inline-table;
+
+}
+/** dashboard **/
+/** table-dashboard **/
+.dash-table {
+    background: #0268b3;
+    text-align: center;
+	border-radius:10px;
+	display: block;
+	margin: 10px auto;
+	width: 93%;
+}
+.dash-table tbody { 
+    background: #fff; 
+}
+.dash-table span img { 
+    width: 35px; 
+}
+.dash-table th {
+	background: #0268b3; 
+	text-align: center; 
+	color: #fff; 
+	border-top-left-radius: 10px; 
+	border-top-right-radius: 10px;
+}
+ .orange {
+    padding-top: 12px !important;
+}
+.orange span{
+	background: #ffa92e;
+	color: #fff;
+	padding: 3px 40px;
+	display: inline-block;
+	border-radius: 20px;
+	font-weight: 600;
+}
+.time-inline li {
+    display: inline-block;
+}
+.time-inline {
+    padding:0;
+	margin:0;
+}
+/** dashboard **/
+ 
