@@ -5,9 +5,10 @@ $config['salt']='eCwWELxi';//live salt
 $config['key']='gtKFFx';//live key
 
 $config['WEB']['HOST']	= "http://".$_SERVER['SERVER_NAME'];// test
-
- if ($_SERVER['SERVER_NAME']=="http://eduisfun.in/"){
+// echo "<pre>"; print_r($_SERVER['SERVER_NAME']); echo "</pre>"; die('end of code');
+ if ($_SERVER['SERVER_NAME']=="localhost"){
 	$config['server'] = "http://eduisfun.in/dashboard/new/principal/" ;
+	$config['server'] = "http://localhost/Tribal-dashboard/new/principal/" ;
 	
 	// $config['WEB_DB']['HOST'] = '148.66.145.137'; 
     // $config['WEB_DB']['USERNAME'] = 'cross_developer';

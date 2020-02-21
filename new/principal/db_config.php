@@ -1,19 +1,13 @@
 <?php
-	$servername = "localhost";
-	$username= "root";
-	$password= "";
-	
-	$dbname= "old_db_200220";
-
-
+	$servername = "Eduisfun.in";
+	$username= "paceedu";
+	$password= "Akhajgdf@7354$";
+	$dbname= "products";
 	
 $conn=mysqli_connect($servername,$username,$password,$dbname)or die('error'.mysqli_error());
-if($conn)
-{
+if($conn){
 	//echo "Database Selected";
-}
-else
-{
+}else{
 	echo "database not selected";
 }
 	

@@ -2,7 +2,8 @@
 global $config;
 
 //SMTP detail
-$config['WEBHOST']	= 'http://eduisfun.in/dashboard/new/'; 
+// $config['WEBHOST']	= 'http://eduisfun.in/dashboard/new/'; 
+$config['WEBHOST']	= 'http://localhost/Tribal-dashboard/new/'; 
 $config['HOST']	= 'mail.etcsndt.com'; 
 $config['USERNAME'] = 'phpsmtp@etcsndt.com';
 $config['PASSWORD'] = '8q13kahynX3q';

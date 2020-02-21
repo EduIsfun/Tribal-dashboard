@@ -1,5 +1,6 @@
 <?php
 	 $servername = "localhost";
+	 $servername = "Eduisfun.in";
 	 $username= "paceedu";
 	 $password= "Akhajgdf@7354$";
 	 $dbname= "products";
