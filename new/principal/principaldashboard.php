@@ -108,6 +108,9 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 			</div>
 			<!-- table -->
 			<div class="table-responsive dash-table" id="userresult">	
+				
+			</div>
+			<div class="table-responsive dash-table" id="user_result_div">	
 				<div class="row">
 					<div id="export_section" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 						<span id="userresults"></span>
@@ -120,7 +123,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						<div class="dt-buttons btn-group" style="display: none; margin-right: 10px;"><button class="btn btn-default buttons-pdf buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>PDF</span></button> </div>
 					</div>
 				</div>
-				<table id="example1" class="table table-bordered table-striped" style="width: 100%">
+				<table id="user_list_table" class="table table-bordered table-striped" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
@@ -144,6 +147,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 					</thead>
 				</table>
 			</div>
+
 			<div class="middle-bg"></div>
 		</div>
 		<div class="col-md-3 no-padd">
@@ -183,26 +187,30 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 	school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
 
-    $('#example1').DataTable({
-        "searching": false,
-        "responsive": true,
-        "processing": true,
-        "serverSide": true,
-        "ajax":{
-        "url": 'getStudentDataList.php',
-        "dataType": "json",
-        "type": "POST",
-        "data":{'school_id': school_name,'board_id':board_id}
-    },
-    "columns": [
-        { "data": "id" },
-        { "data": "fullname" },
-        { "data": "class" },
-        { "data": "rank" },
-        { "data": "time_spend" },
-        { "data": "grade" },
-    ]
-    });
+ 	// var is_chapter_active = $(".chapter_class").hasClass('active');
+ 	// if(is_chapter_active == false){
+ 		$('#user_list_table').DataTable({
+	        "searching": false,
+	        "responsive": true,
+	        "processing": true,
+	        "serverSide": true,
+	        "ajax":{
+	        "url": 'getStudentDataList.php',
+	        "dataType": "json",
+	        "type": "POST",
+	        "data":{'school_id': school_name,'board_id':board_id}
+	    },
+	    "columns": [
+	        { "data": "id" },
+	        { "data": "fullname" },
+	        { "data": "class" },
+	        { "data": "rank" },
+	        { "data": "time_spend" },
+	        { "data": "grade" },
+	    ]
+	    });	
+ 	// }
+    
   });
 </script>
 <script>
@@ -627,48 +635,51 @@ function getChapterDatatable(school_name,chapter_id){
 	console.log('in function');
 	$("#example1_head_row").hide();
 	$("#example1_head_chapter").show();
-	$('#example1').DataTable().clear().destroy();
-	$('#example1').DataTable({
-        "searching": false,
-        "responsive": true,
-        "processing": true,
-        "serverSide": true,
-        "ajax":{
-        "url": 'getChapterStudent.php',
-        "dataType": "json",
-        "type": "POST",
-        "data":{'school_name': school_name,'chapter_id':chapter_id},
-        // "success": function(response){
-        // 	console.log('in DataTable getChapterStudent');
-        // 	console.log(response);
-        // 	console.log(response.columns_head);
-        // 	if(response.columns_head && (response.columns_head != '')){
-        // 		var head_html = '';
-        // 		jQuery.each( response.columns_head, function( i, val ) {
-        // 			head_html += '<th>'+val+'</th>';
-        // 		});
-        // 		$("#example1_head_row").html(head_html);
-        // 	}
-        // }
-    }
-    ,"columns": [
-        { "data": "id" },
-        { "data": "fullname" },
-        { "data": "Diseases" },
-        { "data": "Nutrition" },
-        { "data": "Sources of Food" },
-        { "data": "Vitamins & Minerals" },
-        { "data": "Eating Habits" },
-        { "data": "Nutrients" },
-        { "data": "overall_score" },
-    ]
-    });
+	$('#user_list_table').DataTable().clear().destroy();
+	// $('#user_list_table').DataTable({
+ //        "searching": false,
+ //        "responsive": true,
+ //        "processing": true,
+ //        "serverSide": true,
+ //        "ajax":{
+ //        "url": 'getChapterStudent.php',
+ //        "dataType": "json",
+ //        "type": "POST",
+ //        "data":{'school_name': school_name,'chapter_id':chapter_id},
+ //        // "success": function(response){
+ //        // 	console.log('in DataTable getChapterStudent');
+ //        // 	console.log(response);
+ //        // 	console.log(response.columns_head);
+ //        // 	if(response.columns_head && (response.columns_head != '')){
+ //        // 		var head_html = '';
+ //        // 		jQuery.each( response.columns_head, function( i, val ) {
+ //        // 			head_html += '<th>'+val+'</th>';
+ //        // 		});
+ //        // 		$("#example1_head_row").html(head_html);
+ //        // 	}
+ //        // }
+ //    }
+ //    ,"columns": [
+ //        { "data": "id" },
+ //        { "data": "fullname" },
+ //        { "data": "Diseases" },
+ //        { "data": "Nutrition" },
+ //        { "data": "Sources of Food" },
+ //        { "data": "Vitamins & Minerals" },
+ //        { "data": "Eating Habits" },
+ //        { "data": "Nutrients" },
+ //        { "data": "overall_score" },
+ //    ]
+ //    });
 }
 
 
 function changeChapter(id,chapter_name){
-	// console.log('chapter_id:'+id);
-	// console.log('chapter_name:'+chapter_name);
+	console.log('chapter_id:'+id);
+	console.log('chapter_name:'+chapter_name);
+	$("#userresult").hide();
+	$("#user_result_div").show();
+
 	var class_id = $('#class_id').val();
     var subject_id = $("#subject_id").val();
     var school_id = $('#school_id').val();
@@ -755,7 +766,7 @@ function changeChapter(id,chapter_name){
 function changeTopic(id,sval){
 	//$('#chapter').empty('');
      //console.log('subject_id' + subject_id);
-
+    $("#user_result_div").hide();
 	//lert(sval);
 	var classid=$('#class_id').val();
 	var school_id = $('#school_id').val();

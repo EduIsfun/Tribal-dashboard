@@ -142,7 +142,7 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="getClass")){
 		while($obj = mysqli_fetch_object($result))	{
 			$chapter_id = $obj->chapterID;
 			$chapter_name = substr($obj->chapter,0,30);
-			$output .= '<li class="" id ="'.$chapter_id.'">';
+			$output .= '<li class="chapter_class" id ="'.$chapter_id.'">';
 			$output .= "<a href='#submenu66$countchapter' data-toggle='collapse' aria-expanded='false' class='bg-dark list-group-item list-group-item-action flex-column align-items-start collapsed'>
 						<div class='d-flex w-100 justify-content-start align-items-center'>
 						<img src='images/key.png' style='opacity: .6;' alt='' />
@@ -264,7 +264,7 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="getSubject")){
 			$skillsArr = explode(';', $obj->skills);
 			$chapter_id = $obj->chapterID;
 			$chapter_name = substr($obj->chapter,0,30);
-			$output .= '<li class="" id ="'.$chapter_id.'">';
+			$output .= '<li class="chapter_class" id ="'.$chapter_id.'">';
 			$output .= "<a href='#submenu66$countchapter' data-toggle='collapse' aria-expanded='false' class='bg-dark list-group-item list-group-item-action flex-column align-items-start collapsed'>
 						<div class='d-flex w-100 justify-content-start align-items-center'>
 						<img src='images/key.png' style='opacity: .6;' alt='' />
@@ -313,7 +313,7 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="getSubjects")){
 	while($obj = mysqli_fetch_object($result)){
 		$chapter_id = $obj->chapterID;
 		$chapter_name = substr($obj->chapter,0,30);
-		$output .= '<li class="" id ="'.$chapter_id.'">';
+		$output .= '<li class="chapter_class" id ="'.$chapter_id.'">';
 		$output .= "<a href='#submenu66$countchapter' data-toggle='collapse' aria-expanded='false' class='bg-dark list-group-item list-group-item-action flex-column align-items-start collapsed'>
 				<div class='d-flex w-100 justify-content-start align-items-center'>
 				<img src='images/key.png' style='opacity: .6;' alt='' />
