@@ -636,41 +636,41 @@ function getChapterDatatable(school_name,chapter_id){
 	$("#example1_head_row").hide();
 	$("#example1_head_chapter").show();
 	$('#user_list_table').DataTable().clear().destroy();
-	// $('#user_list_table').DataTable({
- //        "searching": false,
- //        "responsive": true,
- //        "processing": true,
- //        "serverSide": true,
- //        "ajax":{
- //        "url": 'getChapterStudent.php',
- //        "dataType": "json",
- //        "type": "POST",
- //        "data":{'school_name': school_name,'chapter_id':chapter_id},
- //        // "success": function(response){
- //        // 	console.log('in DataTable getChapterStudent');
- //        // 	console.log(response);
- //        // 	console.log(response.columns_head);
- //        // 	if(response.columns_head && (response.columns_head != '')){
- //        // 		var head_html = '';
- //        // 		jQuery.each( response.columns_head, function( i, val ) {
- //        // 			head_html += '<th>'+val+'</th>';
- //        // 		});
- //        // 		$("#example1_head_row").html(head_html);
- //        // 	}
- //        // }
- //    }
- //    ,"columns": [
- //        { "data": "id" },
- //        { "data": "fullname" },
- //        { "data": "Diseases" },
- //        { "data": "Nutrition" },
- //        { "data": "Sources of Food" },
- //        { "data": "Vitamins & Minerals" },
- //        { "data": "Eating Habits" },
- //        { "data": "Nutrients" },
- //        { "data": "overall_score" },
- //    ]
- //    });
+	$('#user_list_table').DataTable({
+        "searching": false,
+        "responsive": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+        "url": 'getChapterStudent.php',
+        "dataType": "json",
+        "type": "POST",
+        "data":{'school_name': school_name,'chapter_id':chapter_id},
+        // "success": function(response){
+        // 	console.log('in DataTable getChapterStudent');
+        // 	console.log(response);
+        // 	console.log(response.columns_head);
+        // 	if(response.columns_head && (response.columns_head != '')){
+        // 		var head_html = '';
+        // 		jQuery.each( response.columns_head, function( i, val ) {
+        // 			head_html += '<th>'+val+'</th>';
+        // 		});
+        // 		$("#example1_head_row").html(head_html);
+        // 	}
+        // }
+    }
+    ,"columns": [
+        { "data": "id" },
+        { "data": "fullname" },
+        { "data": "Diseases" },
+        { "data": "Nutrition" },
+        { "data": "Sources of Food" },
+        { "data": "Vitamins & Minerals" },
+        { "data": "Eating Habits" },
+        { "data": "Nutrients" },
+        { "data": "overall_score" },
+    ]
+    });
 }
 
 
