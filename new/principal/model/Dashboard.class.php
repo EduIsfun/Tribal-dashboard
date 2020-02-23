@@ -18,7 +18,7 @@ class Dashboard
 		if (!empty($chapter_id)) $query .= " INNER JOIN knowledgekombat_skill ks on nk.chapterID = ks.chapterID";
 		if (!empty($subject_id)) $query .= " INNER JOIN chapter c ON c.`chapterID`= nk.chapterID INNER JOIN `subject` s ON s.`subjectID` = c.subjectID";
 		$query .=" WHERE 1=1";
-		$sql .= " AND Date(u.created_timestamp)>='2019-01-01'";
+		// $sql .= " AND Date(u.created_timestamp)>='2019-01-01'";
 		if (!empty($state_id)) $query .= " AND tbl_states.id='$state_id'";
 		if (!empty($city_id)) $query .= " AND usd.city_id='$city_id'";
 		if (!empty($classid)) $query .= " AND usd.grade = '$classid'";

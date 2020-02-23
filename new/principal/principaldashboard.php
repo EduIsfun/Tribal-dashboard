@@ -120,15 +120,27 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						<div class="dt-buttons btn-group" style="display: none; margin-right: 10px;"><button class="btn btn-default buttons-pdf buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>PDF</span></button> </div>
 					</div>
 				</div>
-				<table id="example1" class="table table-bordered table-striped">
-					<thead>
-						<tr role="row">
+				<table id="example1" class="table table-bordered table-striped" style="width: 100%">
+					<thead id="example1_head">
+						<tr role="row" id="example1_head_row">
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
-							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th></tr>
+							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
+						</tr>
+						<tr role="row" id="example1_head_chapter" style="display: none">
+							<th>id</th>
+							<th style="width: 270px;">fullname</th>
+							<th>Diseases</th>
+							<th>Nutrition</th>
+							<th>Sources of Food</th>
+							<th>Vitamins &amp; Minerals</th>
+							<th>Eating Habits</th>
+							<th>Nutrients</th>
+							<th>Overall</th>
+						</tr>
 					</thead>
 				</table>
 			</div>
@@ -490,17 +502,17 @@ function changeSubject(subject_id){
 	});
 
 	// $.ajax({
-	// 	type:"POST",
-	// 	cache:false,
-	// 	url:"action.php",
-	// 	data: "action=getList&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id,
-	// 	beforeSend: function() {
-	// 		$('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');	
-	// 	},
-	// 	success:function(response){
-	// 		$("#userresult").html(response);
-	// 		$("#subject_id").val(subject_id);
-	// 	}
+		// 	type:"POST",
+		// 	cache:false,
+		// 	url:"action.php",
+		// 	data: "action=getList&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id,
+		// 	beforeSend: function() {
+		// 		$('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');	
+		// 	},
+		// 	success:function(response){
+		// 		$("#userresult").html(response);
+		// 		$("#subject_id").val(subject_id);
+		// 	}
 	// });
 		
 	$.ajax({
@@ -610,7 +622,12 @@ function changeSubject(subject_id){
 	});
 }
 
-function getChapterDatatable(){
+function getChapterDatatable(school_name,chapter_id){
+	// $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
+	console.log('in function');
+	$("#example1_head_row").hide();
+	$("#example1_head_chapter").show();
+	$('#example1').DataTable().clear().destroy();
 	$('#example1').DataTable({
         "searching": false,
         "responsive": true,
@@ -620,15 +637,30 @@ function getChapterDatatable(){
         "url": 'getChapterStudent.php',
         "dataType": "json",
         "type": "POST",
-        "data":{'school_id': school_name,'board_id':board_id}
-    },
-    "columns": [
+        "data":{'school_name': school_name,'chapter_id':chapter_id},
+        // "success": function(response){
+        // 	console.log('in DataTable getChapterStudent');
+        // 	console.log(response);
+        // 	console.log(response.columns_head);
+        // 	if(response.columns_head && (response.columns_head != '')){
+        // 		var head_html = '';
+        // 		jQuery.each( response.columns_head, function( i, val ) {
+        // 			head_html += '<th>'+val+'</th>';
+        // 		});
+        // 		$("#example1_head_row").html(head_html);
+        // 	}
+        // }
+    }
+    ,"columns": [
         { "data": "id" },
         { "data": "fullname" },
-        { "data": "class" },
-        { "data": "rank" },
-        { "data": "time_spend" },
-        { "data": "grade" },
+        { "data": "Diseases" },
+        { "data": "Nutrition" },
+        { "data": "Sources of Food" },
+        { "data": "Vitamins & Minerals" },
+        { "data": "Eating Habits" },
+        { "data": "Nutrients" },
+        { "data": "overall_score" },
     ]
     });
 }
@@ -648,20 +680,22 @@ function changeChapter(id,chapter_name){
 		 $('.sidebar-submenu').collapse('hide');
 	});
 	
-	$.ajax({
-        type:"POST",
-        cache:false,
-        url:"studentresult.php",
-        data: "action=getchapter&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
-        beforeSend: function() {
-            $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');    
-        },
-        success:function(response){
-            $("#userresult").html(response);
+	// $.ajax({
+ //        type:"POST",
+ //        cache:false,
+ //        url:"studentresult.php",
+ //        data: "action=getchapter&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
+ //        beforeSend: function() {
+ //            $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');    
+ //        },
+ //        success:function(response){
+ //            $("#userresult").html(response);
             
-        }
-    });
-
+ //        }
+ //    });
+	console.log('before chapter user data');
+    getChapterDatatable(school_id,id);
+    console.log('after chapter function');
 	$.ajax({
 		type:"POST",
 		cache:false,
