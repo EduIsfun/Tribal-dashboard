@@ -79,11 +79,11 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							//while($objclass = mysqli_fetch_object($classresult)){
 								$clsID = ConverToRoman($classstd);	
 						?> 
-						<li class="active" id ="<?php echo $clsID; ?>">
+						<li class="active" id ="<?php echo $clsID; ?>" onclick="changeClass('<?php echo $clsID; ?>');">
 							<a href="#submenu<?php echo $countclass; ?>" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
 							<div class="d-flex w-100 justify-content-start align-items-center">
 								<img src="images/key.png" style="opacity: .6;" alt="" /> &nbsp 
-								<span name="classid" id="classid" onclick="changeClass('<?php echo $clsID; ?>');" class="menu-collapsed">Class <?php echo $classstd?></span>
+								<span name="classid" id="classid" class="menu-collapsed">Class <?php echo $classstd?></span>
 								<span class="submenu-icon"></span>
 							</div>
 							</a>
@@ -126,9 +126,9 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
-							<!-- <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th> -->
+							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
-							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Rank</th></tr>
+							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th></tr>
 					</thead>
 				</table>
 			</div>
@@ -164,7 +164,11 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
       'autoWidth'   : false
     });
 
-    var school_id = 1;
+    var school_id = $('#school_id').val();
+    school_name = school_id.replace(/\,/g, '');
+	school_name = school_name.replace(/\ /g, '_');
+	console.log(school_name);
+	school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
 
     $('#example1').DataTable({
@@ -176,16 +180,16 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
         "url": 'getStudentDataList.php',
         "dataType": "json",
         "type": "POST",
-        "data":{'school_id': school_id,'board_id':board_id}
+        "data":{'school_id': school_name,'board_id':board_id}
     },
     "columns": [
         { "data": "id" },
         { "data": "fullname" },
-        { "data": "grade" },
-        { "data": "time_spend" },
+        { "data": "class" },
         { "data": "rank" },
+        { "data": "time_spend" },
+        { "data": "grade" },
     ]
-
     });
   });
 </script>
@@ -193,6 +197,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 /* ---+-----+---- Get user result list with class---+---+--*/ 
 function changeClass(classid) {
 	//alert(classid);
+	console.log(classid);
 	$('#chapter').empty('');
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
@@ -224,9 +229,14 @@ function changeClass(classid) {
 			//console.log('response'+ response);
 		}
 	});
+	console.log('school_id:'+school_id);
+	school_name = school_id.replace(/\,/g, '');
+	school_name = school_name.replace(/\ /g, '_');
+	console.log(school_name);
+	school_name = 'EMRS_Shendegaon';
 	school_id = 1;
 	board_id = 7;
-	var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_id+"&boardId="+board_id;
+	var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -241,13 +251,21 @@ function changeClass(classid) {
 
 			var color = {'A1':'green','A2':'#46d246','B1':'#e6e600','B2':'yellow','C1':'#ff9900','C2':'#ffb84d','D':'blue','E1':'#B22222','E2':'red'};
 			var dynamicData = [];
+			var active_student_count = 0;
 			jQuery.each( Overall_score, function( i, val ) {
-			  	console.log('i: '+i);
-			  	console.log('val: '+val.Percent);
-			  	var percent = val.Percent;
+			  	// console.log('i: '+i);
+			  	// console.log('val: '+val.Percent);
+			  	var percent = (val.Percent).replace(/\.0/g, '%');
+			  	// console.log(percent_array)
+			  	// var percent = val.Percent;
 			  	var student_count = val.StudentCount;
 			  	var grade = val.grade;
-			  	var student_percentage = parseInt((student_count/total_count) * 100)+'%'; 
+			  	var student_percentage = 0
+
+			  	if(student_count>0){
+			  		student_percentage = parseInt((student_count/total_count) * 100);	
+			  	}
+			  	active_student_count += student_count;
 			  	dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
 			});
 			console.log(dynamicData);
@@ -272,7 +290,7 @@ function changeClass(classid) {
 				},				
 				subtitles:[
 				  {
-					text: total_count,
+					text: active_student_count,
 					verticalAlign: "center",
 					dockInsidePlotArea: false ,
 					fontSize: 30,
@@ -592,9 +610,33 @@ function changeSubject(subject_id){
 	});
 }
 
+function getChapterDatatable(){
+	$('#example1').DataTable({
+        "searching": false,
+        "responsive": true,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+        "url": 'getChapterStudent.php',
+        "dataType": "json",
+        "type": "POST",
+        "data":{'school_id': school_name,'board_id':board_id}
+    },
+    "columns": [
+        { "data": "id" },
+        { "data": "fullname" },
+        { "data": "class" },
+        { "data": "rank" },
+        { "data": "time_spend" },
+        { "data": "grade" },
+    ]
+    });
+}
+
 
 function changeChapter(id,chapter_name){
-//alert(id);
+	// console.log('chapter_id:'+id);
+	// console.log('chapter_name:'+chapter_name);
 	var class_id = $('#class_id').val();
     var subject_id = $("#subject_id").val();
     var school_id = $('#school_id').val();
@@ -619,6 +661,7 @@ function changeChapter(id,chapter_name){
             
         }
     });
+
 	$.ajax({
 		type:"POST",
 		cache:false,
