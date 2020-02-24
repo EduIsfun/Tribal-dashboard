@@ -1,5 +1,5 @@
 <?php 
-
+include('functions.php');
 // echo "<pre>"; print_r($_REQUEST); echo "</pre>"; die('end of code');
 
     $columns = array( 
@@ -16,6 +16,7 @@
     $start = $post_data['start'];
     $school_name = isset($post_data['school_id'])?$post_data['school_id']:'';
     $board_id = isset($post_data['board_id'])?$post_data['board_id']:'';
+    $classid = isset($post_data['classid'])?$post_data['classid']:'';
     $page_no = ($start/10)+1;
     // echo "<pre>"; print_r($page_no); echo "</pre>"; die('end of code');
     $order = $columns[$post_data['order'][0]['column']];
@@ -25,7 +26,12 @@
         $page_count=$start+1;    
     }
     if(empty($post_data['search']['value'])){
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
+        $url_condition = '';
+        if($classid != 'all'){
+            $url_condition = '&gradeId='.Romannumeraltonumber($classid);
+        }
+        // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=VAGAD_PACE_GLOBAL_SCHOOL&page=".$page_count.$url_condition;
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
@@ -47,19 +53,13 @@
         $err = curl_error($curl);
         curl_close($curl);
 
-        // reset($response);
-        if($response){
-            $api_response=reset($response);    
-        }else{
-            $api_response=array();    
-        }
-        if(!empty($api_response['user'])){
-        	$user_array = $api_response['user'];
+        if(!empty($response['school']['user'])){
+        	$user_array = $response['school']['user'];
         }else{
         	$user_array = array();
         }
         // echo "<pre>"; print_r($api_response['user']); echo "</pre>"; die('end of code api_response');
-        $totalData = 100;
+        $totalData = $response['school']['total_count'];
         $totalFiltered = $totalData;
         // echo "<pre>"; print_r($posts); echo "</pre>"; die("end of posts yoyo");
     }else {
@@ -68,29 +68,29 @@
         // $totalFiltered = $this->Student_Model->studentGradeSearchCount($search);
     }
 
-$data = array();
-if(!empty($user_array)){    
-    foreach ($user_array as $user){
-        // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
-        $nestedData['id'] = $page_count;
-        $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="#" target="_blank">'.$user['name'].'  </a></span>';  
-        $nestedData['class'] = '<span>'.$user['class'].'</span>';
-        $nestedData['grade'] = '<span>'.$user['grade'].'</span>';
-        $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
-        $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
-        $nestedData['rank'] = '<span>'.$user['rank'].'</span>';
-        $data[] = $nestedData;
-    $page_count++;
+    $data = array();
+    if(!empty($user_array)){    
+        foreach ($user_array as $user){
+            // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
+            $nestedData['id'] = $page_count;
+            $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
+            $nestedData['class'] = '<span>'.$user['class'].'</span>';
+            $nestedData['grade'] = '<span>'.$user['grade'].'</span>';
+            $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
+            $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
+            $nestedData['rank'] = '<span>'.$user['rank'].'</span>';
+            $data[] = $nestedData;
+        $page_count++;
+        }
     }
-}
-// echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
-$json_data = array(
-            "draw"            => intval($post_data['draw']),  
-            "recordsTotal"    => intval($totalData),  
-            "recordsFiltered" => intval($totalFiltered), 
-            "data"            => $data   
-            );
-    
-echo json_encode($json_data);
+    // echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
+    $json_data = array(
+                "draw"            => intval($post_data['draw']),  
+                "recordsTotal"    => intval($totalData),  
+                "recordsFiltered" => intval($totalFiltered), 
+                "data"            => $data   
+                );
+        
+    echo json_encode($json_data);
 
 ?>

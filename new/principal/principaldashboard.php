@@ -123,7 +123,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						<div class="dt-buttons btn-group" style="display: none; margin-right: 10px;"><button class="btn btn-default buttons-pdf buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>PDF</span></button> </div>
 					</div>
 				</div>
-				<table id="user_list_table" class="table table-bordered table-striped" style="width: 100%">
+				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
@@ -142,6 +142,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th>Vitamins &amp; Minerals</th>
 							<th>Eating Habits</th>
 							<th>Nutrients</th>
+							<th>Treasure</th>
 							<th>Overall</th>
 						</tr>
 					</thead>
@@ -159,14 +160,13 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 		</div>
 	</div>
 </body>
-</html>
-
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>	
 <script src='js/jquery.dataTables.min.js'></script>
 <script src='js/dataTables.bootstrap.min.js'></script>
+</html>
 
 <script>
   $(function () {
@@ -179,8 +179,14 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
       'info'        : true,
       'autoWidth'   : false
     });
+    
+    
+  });
+</script>
+<script>
 
-    var school_id = $('#school_id').val();
+function getClassStudentData(classid){
+	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
 	console.log(school_name);
@@ -189,6 +195,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
+ 		$('#user_list_table').DataTable().clear().destroy();
  		$('#user_list_table').DataTable({
 	        "searching": false,
 	        "responsive": true,
@@ -198,7 +205,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 	        "url": 'getStudentDataList.php',
 	        "dataType": "json",
 	        "type": "POST",
-	        "data":{'school_id': school_name,'board_id':board_id}
+	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
 	    },
 	    "columns": [
 	        { "data": "id" },
@@ -210,14 +217,43 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 	    ]
 	    });	
  	// }
-    
-  });
-</script>
-<script>
+}
+function romanToInt(str1) {
+	if(str1 == null) return -1;
+	var num = char_to_int(str1.charAt(0));
+	var pre, curr;
+
+	for(var i = 1; i < str1.length; i++){
+		curr = char_to_int(str1.charAt(i));
+		pre = char_to_int(str1.charAt(i-1));
+		if(curr <= pre){
+			num += curr;
+		} else {
+			num = num - pre*2 + curr;
+		}
+	}
+
+	return num;
+}
+
+function char_to_int(c){
+	switch (c){
+		case 'I': return 1;
+		case 'V': return 5;
+		case 'X': return 10;
+		case 'L': return 50;
+		case 'C': return 100;
+		case 'D': return 500;
+		case 'M': return 1000;
+		default: return -1;
+	}
+}
 /* ---+-----+---- Get user result list with class---+---+--*/ 
 function changeClass(classid) {
 	//alert(classid);
-	console.log(classid);
+	// console.log(classid);
+	// $("#userresult").show();
+	$("#user_result_div").show();
 	$('#chapter').empty('');
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
@@ -238,7 +274,9 @@ function changeClass(classid) {
 	// 		console.log('response'+response);
 	// 	}
 	// });
-
+	$("#example1_head_row").show();
+	$("#example1_head_chapter").hide();
+	getClassStudentData(classid);
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -249,14 +287,21 @@ function changeClass(classid) {
 			//console.log('response'+ response);
 		}
 	});
-	console.log('school_id:'+school_id);
+	// console.log('school_id:'+school_id);
 	school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	console.log(school_name);
+	// console.log(school_name);
 	school_name = 'EMRS_Shendegaon';
 	school_id = 1;
 	board_id = 7;
-	var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
+	var url_condition ='';
+	if(classid != 'all'){
+		url_condition = '&gradeId='+romanToInt(classid);
+	}
+	console.log('in changeClass');
+	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
+	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
+	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=VAGAD_PACE_GLOBAL_SCHOOL&page=1"+url_condition;
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -348,114 +393,6 @@ function changeClass(classid) {
 			chart.render();
 		}
 	});
-	//alert(classid+'===');		// return json_encode
-
-	// $.ajax({
-	// 	type:"POST",
-	// 	cache:false,
-	// 	url:"chart_details.php",
-	// 	data:"action=getChartDetails&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id,
-	// 	// contentType: "application/json",
-	// 	// dataType:"josn",
-	// 	success:function(chartData){
-			
-	// 		//console.log('chartData'+chartData);
-			 
-	// 		var your_object = JSON.parse(chartData);
-	// 		// var json_text = JSON.stringify(your_object, null, 2);
-			
-	// 		var A1 = ( your_object.A1 ) ? your_object.A1 : 0;
-	// 		var A2 = ( your_object.A2 ) ? your_object.A2 : 0;
-	// 		var B1 = ( your_object.B1 ) ? your_object.B1 : 0;
-	// 		var B2 = ( your_object.B2 ) ? your_object.B2 : 0;
-	// 		var C1 = ( your_object.C1 ) ? your_object.C1 : 0;
-	// 		var C2 = ( your_object.C2 ) ? your_object.C2 : 0;
-	// 		var D =	( your_object.D ) ? your_object.D : 0;
-	// 		var E1 = ( your_object.E1 ) ? your_object.E1 : 0;
-	// 		var E2 = ( your_object.E2 ) ? your_object.E2 : 0;
-	// 		var sumall = A1+A2+B1+B2+C1+C2+D+E1+E2;
-		
-	// 		var A1per =  ((A1*100)/sumall).toFixed(0);
-	// 		var A2per =  ((A2*100)/sumall).toFixed(0);
-	// 		var B1per =  ((B1*100)/sumall).toFixed(0);
-	// 		var B2per =  ((B2*100)/sumall).toFixed(0);
-	// 		var C1per =  ((C1*100)/sumall).toFixed(0);
-	// 		var C2per =  ((C2*100)/sumall).toFixed(0);
-	// 		var Dper =  ((D*100)/sumall).toFixed(0);
-	// 		var E1per =  ((E1*100)/sumall).toFixed(0);
-	// 		var E2per =  ((E2*100)/sumall).toFixed(0);
-	// 		var dynamicData = [];
-	// 		if ( A1 > 0 ) dynamicData.push({ label: "A1 (90%-100%)("+A1per+"%)", "y": A1, color: "green", bottomlabel: "A1 (90%-100%)" },);
-	// 		if ( A2 > 0 ) dynamicData.push({ label: "A2 (80%-90%)("+A2per+"%)", "y": A2, color: "#46d246",bottomlabel: "A2 (80%-90%)" },);
-	// 		if ( B1 > 0 ) dynamicData.push({ label: "B1 (70%-80%)("+B1per+"%)", "y": B1, color: "#e6e600", bottomlabel: "B1 (70%-80%)" },);
-	// 		if ( B2 > 0 ) dynamicData.push({ label: "B2 (60%-70%)("+B2per+"%)", "y": B2, color: "yellow",bottomlabel: "B2 (60%-70%)" },);
-	// 		if ( C1 > 0 ) dynamicData.push({ label: "C1 (50%-60%)("+C1per+"%)", "y": C1, color: "#ff9900", bottomlabel: "C1 (50%-60%)" },);
-	// 		if ( C2 > 0 ) dynamicData.push({  label: "C2 (40%-50%)("+C2per+"%)", "y": C2, color: "#ffb84d", bottomlabel: "C2 (40%-50%)"  },);
-	// 		if ( D > 0 ) dynamicData.push({ label: "D (30%-40%)("+Dper+"%)", "y": D, color: "blue", bottomlabel: "D (30%-40%)"},);
-	// 		if ( E1 > 0 ) dynamicData.push({ label: "E1 (20%-30%)("+E1per+"%)", "y": E1, color: "#B22222",bottomlabel: "E1 (20%-30%)"  },);
-	// 		if ( E2 > 0 ) dynamicData.push({  label: "E2 (0%-20%)("+E2per+"%)", "y": E2, color: "red", bottomlabel: "E2 (0%-20%)"  },);
-			
-	// 		/*var dynamicData = [
-	// 			 { "y": A1, color: "green", bottomlabel: "A1 (90-100)" },
-	// 			 { "y": A2, color: "#46d246",bottomlabel: "A2 (80-90)" },
-	// 			 { "y": B1, color: "#e6e600", bottomlabel: "B1 (70-80)" },
-	// 			 { "y": B2, color: "yellow",bottomlabel: "B2 (60-70)" },
-	// 			 { "y": C1, color: "#ff9900", bottomlabel: "C1 (50-60)" },
-	// 			 { "y": C2, color: "#ffb84d", bottomlabel: "C2 (40-50)" },
-	// 			 { "y": D, color: "blue", bottomlabel: "D (30-40)"},
-	// 			 { "y": E1, color: "#B22222",bottomlabel: "E1 (20-30)" },
-	// 			 { "y": E2, color: "red", bottomlabel: "E2 (0-20)" },
-	// 		]; 
-	// 		*/
-	// 		/* pie charts used  */
-	// 		console.log(dynamicData);
-	// 		var chart = new CanvasJS.Chart("chartContainer", {
-	// 			theme: "dark2", // "light1", "light2", "dark1", "dark2"
-	// 			exportEnabled: true,
-	// 			animationEnabled: true,				
-	// 			title: {
-	// 				text: "Performance Chart",
-	// 			},				
-	// 			subtitles:[
-	// 			  {
-	// 				text: sumall,
-	// 				verticalAlign: "center",
-	// 				dockInsidePlotArea: false ,
-	// 				fontSize: 30,
-	// 				color:"#fff"
-	// 			  },
-				 
-	// 			  {
-	// 				text: "Students",
-	// 				padding: {
-	// 				 top: 50,
-	// 				 right: 1,
-	// 				 bottom: 0,
-	// 				 left: 2
-	// 				},
-	// 				verticalAlign: "center",
-	// 				dockInsidePlotArea: false ,
-	// 				fontSize: 20,
-	// 				color:"#fff"
-	// 			  }],
-								
-				
-	// 			data: [{
-	// 				//type: "pie",
-	// 				type: "doughnut",
-	// 				innerRadius: 50,
-	// 				//yValueFormatString: "#,##0.00\"%00.4\"",
-	// 				showInLegend: "true",
-	// 				legendText: "{bottomlabel}",
-	// 				yValueFormatString: "",
-	// 				//indexLabel: "{label} ({y})",
-	// 				dataPoints: dynamicData
-	// 			}]			
-	// 		});				
-	// 		/* End pie charts used  */
-	// 		chart.render();
-	// 	}
-	// });
 
 	// for class and board wise subject
 	$.ajax({
@@ -464,6 +401,8 @@ function changeClass(classid) {
 		url:"action.php",
 		data: "action=get_board_class_wise_subjects&board_id="+board_id+"&class_id="+classid,
 		success:function(response){
+			console.log('in change class subjecy response');
+			console.log(response);
 			$("#tab_subjects").html(response);
  			$('#'+subject_id).attr("class", "active");
 		}
@@ -669,55 +608,36 @@ function getChapterDatatable(school_name,chapter_id){
         { "data": "Eating Habits" },
         { "data": "Nutrients" },
         { "data": "overall_score" },
+        { "data": "overall_grade" },
     ]
     });
 }
 
-
-function changeChapter(id,chapter_name){
-	console.log('chapter_id:'+id);
-	console.log('chapter_name:'+chapter_name);
-	$("#userresult").hide();
-	$("#user_result_div").show();
-
-	var class_id = $('#class_id').val();
-    var subject_id = $("#subject_id").val();
-    var school_id = $('#school_id').val();
-    var state_id = $('#state_id').val();
-    var city_id = $('#city_id').val();
-	
-   $('li').click(function (event) {
-		$(this).addClass('active').siblings().removeClass('active');
-		 $('.sidebar-submenu').collapse('hide');
-	});
-	
-	// $.ajax({
- //        type:"POST",
- //        cache:false,
- //        url:"studentresult.php",
- //        data: "action=getchapter&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
- //        beforeSend: function() {
- //            $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');    
- //        },
- //        success:function(response){
- //            $("#userresult").html(response);
-            
- //        }
- //    });
-	console.log('before chapter user data');
-    getChapterDatatable(school_id,id);
-    console.log('after chapter function');
+function getChapterGraph(school_name,chapter_id,chapter_name){
 	$.ajax({
 		type:"POST",
 		cache:false,
-		url:"graphaction.php",
-		data: "action=getchaptercounts&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
-		// dataType:"json",
+		url:"getChapterGraph.php",
+		data: {school_name:school_name,chapter_id:chapter_id},
+		dataType:"JSON",
+		async:true,
 		beforeSend: function() {
 			$('#chartContainer').html("<img src='images/uc.gif' height='80'>").show('fast');	
 		},
-		success:function(response){
+		success:function(result){
 			//alert(response);
+			var response = result.final_array;
+			var topics_list = result.topics_list;
+			console.log(topics_list);
+			if(topics_list){
+				var table_header_html = '<th>id</th><th style="width: 270px;">fullname</th>';
+				jQuery.each( topics_list, function( i, val ) {
+					table_header_html +='<th>'+val.name+'</th>';
+				});
+				table_header_html +='<th>Treasure</th><th>Overall</th>'
+				$("#example1_head_chapter").html(table_header_html);
+				// console.log(table_header_html);
+			}
 			if (response==0){
 				$('#chartContainer').html("No Record found").show('fast');	
 			} else {	
@@ -760,6 +680,96 @@ function changeChapter(id,chapter_name){
 			}
 		}	
 	});
+}
+
+function changeChapter(id,chapter_name){
+	console.log('chapter_id:'+id);
+	console.log('chapter_name:'+chapter_name);
+	$("#userresult").hide();
+	$("#user_result_div").show();
+
+	var class_id = $('#class_id').val();
+    var subject_id = $("#subject_id").val();
+    var school_id = $('#school_id').val();
+    var state_id = $('#state_id').val();
+    var city_id = $('#city_id').val();
+	
+   $('li').click(function (event) {
+		$(this).addClass('active').siblings().removeClass('active');
+		 $('.sidebar-submenu').collapse('hide');
+	});
+	
+	// $.ajax({
+    //     type:"POST",
+    //     cache:false,
+    //     url:"studentresult.php",
+    //     data: "action=getchapter&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
+    //     beforeSend: function() {
+    //         $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');    
+    //     },
+    //     success:function(response){
+    //         $("#userresult").html(response);
+            
+    //     }
+    // });
+    getChapterGraph(school_id,id,chapter_name);
+	console.log('before chapter user data');
+    getChapterDatatable(school_id,id);
+    console.log('after chapter function');
+    return false;
+	// $.ajax({
+	// 	type:"POST",
+	// 	cache:false,
+	// 	url:"graphaction.php",
+	// 	data: "action=getchaptercounts&chapter_id="+id+"&school_id="+school_id+"&class_id="+class_id+"&subject_id="+subject_id+"&state_id="+state_id+"&city_id="+city_id,
+	// 	// dataType:"json",
+	// 	beforeSend: function() {
+	// 		$('#chartContainer').html("<img src='images/uc.gif' height='80'>").show('fast');	
+	// 	},
+	// 	success:function(response){
+	// 		//alert(response);
+	// 		if (response==0){
+	// 			$('#chartContainer').html("No Record found").show('fast');	
+	// 		} else {	
+	// 			var dataval = JSON.parse(response);
+	// 			var chart = new CanvasJS.Chart("chartContainer",
+	// 			{
+	// 			backgroundColor: "#ffffff",
+	// 			title:{
+	// 				text: chapter_name
+	// 			},
+	// 			axisY:{
+	// 				title:"No of Students",
+	// 			},
+	// 			 axisX:{
+	// 			  labelAutoFit: false,  
+	// 			   labelMaxWidth: 100,  
+	// 			   labelWrap: false,
+	// 			   labelAngle: 20,
+	// 			 },
+	// 			toolTip: {
+	// 				shared: true,
+	// 				reversed: false,
+	// 				contentFormatter: function (e) {
+	// 				var content = " ";
+	// 				for (var i = 0; i < e.entries.length; i++) {
+	// 					if (e.entries[i].dataPoint.y!=0){
+	// 					content += e.entries[i].dataSeries.name + " " + "<strong>" + e.entries[i].dataPoint.y + "</strong>";
+	// 					content += "<br/>";
+	// 					}
+	// 				}
+	// 				return content;
+	// 			}
+					
+					
+	// 			},
+	// 			data: dataval
+	// 		 });
+			
+	// 			chart.render();
+	// 		}
+	// 	}	
+	// });
 }
 
 

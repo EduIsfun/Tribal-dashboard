@@ -117,6 +117,7 @@ if (isset($_POST['action']) && ($_POST['action']="getchaptercounts")){
 			$res[] = array("type"=>"stackedColumn","name"=>"D","showInLegend"=>"true","yValueFormatString"=> "#,##","dataPoints"=>$resd,"color"=>'#0033cc');
 			$res[] = array("type"=>"stackedColumn","name"=>"E1","showInLegend"=>"true","yValueFormatString"=> "#,##","dataPoints"=>$rese1,"color"=>'#b32400');
 			$res[] = array("type"=>"stackedColumn","name"=>"E2","showInLegend"=>"true","yValueFormatString"=> "#,##","dataPoints"=>$rese2,"color"=>'#ff471a');
+			// echo "<pre>"; print_r($res); echo "</pre>"; die('end of code');
 			$data[]=$res;
 			echo json_encode($res,true);
 			die();		
