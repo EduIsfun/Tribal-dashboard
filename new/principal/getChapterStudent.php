@@ -27,7 +27,7 @@
         $page_count=$start+1;    
     }
     if(empty($post_data['search']['value'])){
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=".$school_name."&page=".$page_no."&chapterId=".$chapter_id;
+        // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=".$school_name."&page=".$page_no."&chapterId=".$chapter_id;
         $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=EMRS_Shendegaon&page=1&chapterId=6TS0001';
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
@@ -64,38 +64,43 @@
 
     $data = array();
     if(!empty($user_array)){
-        $new_column_array = ['id','fullname','overall_score','overall_grade'];
+        // $new_column_array = ['id','fullname','overall_score','overall_grade'];
+        $new_column_array = ['id','fullname'];
         $button_color_array = array('A1'=>'greenr12','A2'=>'greenr2','B1'=>'yello1','B2'=>'yello2','C1'=>'oran1','C2'=>'oran2','D'=>'blue2','E1'=>'red','E2'=>'red1');    
         foreach ($user_array as $user){
             // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="#" target="_blank">'.$user['name'].'  </a></span>';  
-            $nestedData['overall_score'] = '<span>'.round($user['overall_score']).'</span>';
-            $nestedData['overall_grade'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
             foreach ($user['score'] as $key => $value) {
-                $nestedData[$value['chapter_name']]='<div class="popupHoverElement"><span class="'.$button_color_array[$value['grade']].'">'. $value['grade'].'</span><div id="two" class="popupBox1"><h2> Snakes &amp; Snake Charmer </h2></div></div>';
+                $nestedData[$value['chapter_name']]='<span class="'.$button_color_array[$value['grade']].'">'. $value['grade'].'</span>';
                 array_push($new_column_array, $value['chapter_name']);
             }
+            $nestedData['overall_score'] = '<span>'.round($user['overall_score']).'</span>';
+            $nestedData['overall_grade'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
         $page_count++;
         }
         $final_column_array = array();
+        $i=0;
+        array_push($new_column_array, 'overall_score');
+        array_push($new_column_array, 'overall_grade');
         foreach (array_unique($new_column_array) as $key => $value) {
             // $final_column_array[$key]['title'] = $value;
-            $final_column_array[$key]['data'] =  $value;
+            $final_column_array[$i]['data'] =  $value;
+            $i++;
         }
         // echo "<pre>"; print_r($final_column_array); echo "</pre>"; die('end of code');
     }
     // echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
     $json_data = array(
-                "draw"            => intval($post_data['draw']),  
+                // "draw"            => intval($post_data['draw']),  
                 "recordsTotal"    => intval($totalData),  
                 "recordsFiltered" => intval($totalFiltered), 
                 "data"            => $data,
                 // "columns_head"    => array_unique($new_column_array),   
                 // "topics_list"     => $topics_list,   
-                // "column"         => json_encode($final_column_array,true),   
+                "columns"         => $final_column_array,   
                 );
         
     echo json_encode($json_data);

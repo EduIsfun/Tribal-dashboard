@@ -31,7 +31,8 @@ include('functions.php');
             $url_condition = '&gradeId='.Romannumeraltonumber($classid);
         }
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=VAGAD_PACE_GLOBAL_SCHOOL&page=".$page_count.$url_condition;
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_count.$url_condition;
+        // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
@@ -58,7 +59,7 @@ include('functions.php');
         }else{
         	$user_array = array();
         }
-        // echo "<pre>"; print_r($api_response['user']); echo "</pre>"; die('end of code api_response');
+        // echo "<pre>"; print_r($user_array); echo "</pre>"; die('end of code api_response');
         $totalData = $response['school']['total_count'];
         $totalFiltered = $totalData;
         // echo "<pre>"; print_r($posts); echo "</pre>"; die("end of posts yoyo");
@@ -75,10 +76,11 @@ include('functions.php');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             $nestedData['class'] = '<span>'.$user['class'].'</span>';
-            $nestedData['grade'] = '<span>'.$user['grade'].'</span>';
+            $nestedData['grade'] = (isset($user['grade']))?'<span>'.$user['grade'].'</span>':'E2';
             $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
             $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
             $nestedData['rank'] = '<span>'.$user['emrs_rank'].'</span>';
+            // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
         $page_count++;
         }

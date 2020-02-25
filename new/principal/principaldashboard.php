@@ -189,11 +189,12 @@ function getClassStudentData(classid){
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
 	console.log(school_name);
-	school_name = 'EMRS_Shendegaon';
+	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
 
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
+ 		$('#chapter_user_table_wrapper').hide();
  		$('#user_list_table').DataTable().clear().destroy();
  		$('#user_list_table').DataTable({
 	        "searching": false,
@@ -290,7 +291,7 @@ function changeClass(classid) {
 	school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
 	// console.log(school_name);
-	school_name = 'EMRS_Shendegaon';
+	// school_name = 'EMRS_Shendegaon';
 	school_id = 1;
 	board_id = 7;
 	var url_condition ='';
@@ -300,7 +301,7 @@ function changeClass(classid) {
 	console.log('in changeClass');
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
-	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=VAGAD_PACE_GLOBAL_SCHOOL&page=1"+url_condition;
+	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId="+school_name+"&page=1"+url_condition;
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -569,6 +570,32 @@ function changeSubject(subject_id){
 }
 
 function getChapterDatatable(school_name,chapter_id){
+	$("#example1_head_row").hide();
+	$("#example1_head_chapter").hide();
+	$("#user_list_table_wrapper").hide();
+	$.ajax({
+        type: 'POST',
+        dataType: 'json',
+        // url: 'getChapterStudentNew.php',
+        url: 'getChapterStudent.php',
+        data: {school_name:school_name,chapter_id:chapter_id},
+        success: function(d) {
+        	if ( $.fn.DataTable.isDataTable('#chapter_user_table') ) {
+			  $('#chapter_user_table').DataTable().destroy();
+			}
+
+			$('#chapter_user_table tbody').empty();
+            $('#chapter_user_table').DataTable({
+                dom: "Bfrtip",
+                data: d.data,
+                // destroy:true,
+                columns: d.columns
+            });
+        }
+    });
+}
+
+function getChapterDatatableOld(school_name,chapter_id){
 	// $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
 	console.log('in function');
 	$("#example1_head_row").hide();
@@ -576,37 +603,37 @@ function getChapterDatatable(school_name,chapter_id){
 
 	console.log('before getChapterGraph ');
 	console.log(topics_list_count);
-	$('#user_list_table').DataTable().clear().destroy();
-	table = $('#chapter_user_table').DataTable({
-      "processing": true, //Feature control the processing indicator.
-      "serverSide": true, //Feature control DataTables' servermside processing mode.
-      //"order": [], //Initial no order.
-      "iDisplayLength" : 10,
-      // Load data for the table's content from an Ajax source
-      "ajax": {
-        "url": "getChapterStudentNew.php",
-        "type": "POST",
-        "dataType": "JSON",
-        "dataSrc": function (jsonData) {return jsonData.data;}
-      },
-      // Set column definition initialisation properties.
-      "columnDefs": [
-        {
-          "targets": [ 0,topics_list_count-1], //first column / numbering column
-          "orderable": false, //set not orderable
-        },
-      ],
-    });
+	// $('#chapter_user_table').DataTable().clear().destroy();
+	// table = $('#chapter_user_table').DataTable({
+ //      "processing": true, //Feature control the processing indicator.
+ //      "serverSide": true, //Feature control DataTables' servermside processing mode.
+ //      //"order": [], //Initial no order.
+ //      "iDisplayLength" : 10,
+ //      // Load data for the table's content from an Ajax source
+ //      "ajax": {
+ //        "url": "getChapterStudentNew.php",
+ //        "type": "POST",
+ //        "dataType": "JSON",
+ //        "dataSrc": function (jsonData) {return jsonData.data;}
+ //      },
+ //      // Set column definition initialisation properties.
+ //      "columnDefs": [
+ //        {
+ //          "targets": [ 0,topics_list_count-1], //first column / numbering column
+ //          "orderable": false, //set not orderable
+ //        },
+ //      ],
+ //    });
 
-	// $('#user_list_table').DataTable().clear().destroy();
+	// $('#chapter_user_table').DataTable().clear().destroy();
 	// $.ajax({
 	//        type: 'POST',
 	//        dataType: 'json',
-	//        url: 'getChapterStudent.php',
-	//        // data: {json: JSON.stringify(jsonData)},
+	//        url: 'getChapterStudentNew.php',
+	//        data: {school_name:school_name,chapter_id:chapter_id},
 	//        success: function(d) {
 	//        	console.log(d);
-	//            $('#user_list_table').DataTable({
+	//            $('#chapter_user_table').DataTable({
 	//                dom: "Bfrtip",
 	//                data: d.data,
 	//                columns: d.columns
@@ -618,7 +645,8 @@ function getChapterDatatable(school_name,chapter_id){
 	// $('#chapter_user_table').DataTable( {
 	//     serverSide: true,
 	//     ajax: {
-	//         url: 'getChapterStudent.php',
+	//     	data: {school_name:school_name,chapter_id:chapter_id},
+	//         url: 'getChapterStudentNew.php',
 	//         type: 'POST'
 	//     },
 	//     // columns:topics_list_column
@@ -672,7 +700,7 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 		url:"getChapterGraph.php",
 		data: {school_name:school_name,chapter_id:chapter_id},
 		dataType:"JSON",
-		async:false,
+		async:true,
 		beforeSend: function() {
 			$('#chartContainer').html("<img src='images/uc.gif' height='80'>").show('fast');	
 		},
@@ -695,9 +723,9 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 					table_header_html +='<th>'+val+'</th>';
 				});
 				// table_header_html +='<th>Treasure</th><th>Overall</th>'
-				setTimeout(function() { 
-			        $("#chapter_table_head").html(table_header_html);
-			    }, 2000);
+				// setTimeout(function() { 
+			 //        // $("#chapter_table_head").html(table_header_html);
+			 //    }, 2000);
 				
 				// console.log(table_header_html);
 			}
