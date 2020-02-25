@@ -78,7 +78,7 @@ include('functions.php');
             $nestedData['grade'] = '<span>'.$user['grade'].'</span>';
             $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
             $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
-            $nestedData['rank'] = '<span>'.$user['rank'].'</span>';
+            $nestedData['rank'] = '<span>'.$user['emrs_rank'].'</span>';
             $data[] = $nestedData;
         $page_count++;
         }

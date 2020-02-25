@@ -695,7 +695,10 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 					table_header_html +='<th>'+val+'</th>';
 				});
 				// table_header_html +='<th>Treasure</th><th>Overall</th>'
-				$("#chapter_table_head").html(table_header_html);
+				setTimeout(function() { 
+			        $("#chapter_table_head").html(table_header_html);
+			    }, 2000);
+				
 				// console.log(table_header_html);
 			}
 			if (response==0){
