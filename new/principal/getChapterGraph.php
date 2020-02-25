@@ -7,7 +7,7 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
     $school_name = str_replace(' ','_',$school_name);
 	$chapter_id = $_POST['chapter_id'];
 
-    $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId='.$school_name.'&page=1&chapterId='+$chapter_id;
+    // $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId='.$school_name.'&page=1&chapterId='.$chapter_id;
 	$url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=EMRS_Shendegaon&page=1&chapterId=6TS0001';
 
 	$curl = curl_init();
@@ -79,7 +79,17 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
     		$final_array[$i]['color'] = $value['color'];
     		$i++;
     	}
-        $return_array['topics_list'] = $response['chapter']['topics'];
+
+        $topic_array = $response['chapter']['topics'];
+        $final_column_array = array('id','fullname');
+        foreach ($topic_array as $key => $value) {
+            $final_column_array[] = $value['name'];
+        }
+        $final_column_array[] = 'Treasure';
+        $final_column_array[] = 'Overall';
+        // echo "<pre>"; print_r(json_encode($final_column_array)); echo "</pre>"; die('end of code');
+        $return_array['topic_array'] = $topic_array;
+        $return_array['topics_list'] = $final_column_array;
         $return_array['final_array'] = json_encode($final_array,true);
     	echo json_encode($return_array,true);
     	// echo "<pre>"; print_r($final_array); echo "</pre>"; die('end of final_array');

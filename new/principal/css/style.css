@@ -1036,6 +1036,14 @@ div {
 	
 }
 
+.grey2{
+  /* border: 1px solid #e2e3e5; */
+  background: #8e8e90;
+  padding: 5px 20px;
+  color: #fff;
+  border-radius: 20px;
+}
+
 
 .blue2 {
     /* border: 1px solid #9a9b9d; */

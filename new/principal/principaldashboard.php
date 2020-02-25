@@ -3,7 +3,6 @@ $time = microtime();
 $time = explode(' ', $time);
 $time = $time[1] + $time[0];
 $start = $time;
-
 session_start();
 if(empty($_SESSION['uids'])){
 	header("location:index.php");
@@ -20,15 +19,11 @@ $download = new Download();
 // echo "<pre>"; print_r($_SESSION); echo "</pre>"; die('end of code');
 
 if (isset($_SESSION['schoolname']) && ($_SESSION['schoolname']!='')){
-		$schoolname =$_SESSION['schoolname'];
-	
-		$schoolarray = str_replace("|", "','",  $schoolname );
+	$schoolname =$_SESSION['schoolname'];
+	$schoolarray = str_replace("|", "','",  $schoolname );
 } else {
-		echo "<script>window.open('logout.php','_self')</script>";
+	echo "<script>window.open('logout.php','_self')</script>";
 }	
-	
-	
-
 
 //echo ConverToRoman(23); 
 $classid =isset($_POST['classid'])?$_POST['classid']:'I';
@@ -123,6 +118,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						<div class="dt-buttons btn-group" style="display: none; margin-right: 10px;"><button class="btn btn-default buttons-pdf buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>PDF</span></button> </div>
 					</div>
 				</div>
+				<!-- <table id="user_chapter_list" class="table sub_table1 main-table dataTable no-footer" style="width: 100%"></table> -->
 				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
@@ -133,7 +129,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
 						</tr>
-						<tr role="row" id="example1_head_chapter" style="display: none">
+						<!-- <tr role="row" id="example1_head_chapter" style="display: none">
 							<th>id</th>
 							<th style="width: 270px;">fullname</th>
 							<th>Diseases</th>
@@ -144,8 +140,11 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th>Nutrients</th>
 							<th>Treasure</th>
 							<th>Overall</th>
-						</tr>
+						</tr> -->
 					</thead>
+				</table>
+				<table id="chapter_user_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
+					<thead id="chapter_table_head"></thead>
 				</table>
 			</div>
 
@@ -573,7 +572,58 @@ function getChapterDatatable(school_name,chapter_id){
 	// $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
 	console.log('in function');
 	$("#example1_head_row").hide();
-	$("#example1_head_chapter").show();
+	$("#example1_head_chapter").hide();
+
+	console.log('before getChapterGraph ');
+	console.log(topics_list_count);
+	$('#user_list_table').DataTable().clear().destroy();
+	table = $('#chapter_user_table').DataTable({
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' servermside processing mode.
+      //"order": [], //Initial no order.
+      "iDisplayLength" : 10,
+      // Load data for the table's content from an Ajax source
+      "ajax": {
+        "url": "getChapterStudentNew.php",
+        "type": "POST",
+        "dataType": "JSON",
+        "dataSrc": function (jsonData) {return jsonData.data;}
+      },
+      // Set column definition initialisation properties.
+      "columnDefs": [
+        {
+          "targets": [ 0,topics_list_count-1], //first column / numbering column
+          "orderable": false, //set not orderable
+        },
+      ],
+    });
+
+	// $('#user_list_table').DataTable().clear().destroy();
+	// $.ajax({
+	//        type: 'POST',
+	//        dataType: 'json',
+	//        url: 'getChapterStudent.php',
+	//        // data: {json: JSON.stringify(jsonData)},
+	//        success: function(d) {
+	//        	console.log(d);
+	//            $('#user_list_table').DataTable({
+	//                dom: "Bfrtip",
+	//                data: d.data,
+	//                columns: d.columns
+	//            });
+	//        }
+	//    });
+	// return false;
+	// console.log(topics_list_column);
+	// $('#chapter_user_table').DataTable( {
+	//     serverSide: true,
+	//     ajax: {
+	//         url: 'getChapterStudent.php',
+	//         type: 'POST'
+	//     },
+	//     // columns:topics_list_column
+	// });
+	return false;
 	$('#user_list_table').DataTable().clear().destroy();
 	$('#user_list_table').DataTable({
         "searching": false,
@@ -598,21 +648,23 @@ function getChapterDatatable(school_name,chapter_id){
         // 	}
         // }
     }
-    ,"columns": [
-        { "data": "id" },
-        { "data": "fullname" },
-        { "data": "Diseases" },
-        { "data": "Nutrition" },
-        { "data": "Sources of Food" },
-        { "data": "Vitamins & Minerals" },
-        { "data": "Eating Habits" },
-        { "data": "Nutrients" },
-        { "data": "overall_score" },
-        { "data": "overall_grade" },
-    ]
+    // ,"columns": [
+    //     { "data": "id" },
+    //     { "data": "fullname" },
+    //     { "data": "Diseases" },
+    //     { "data": "Nutrition" },
+    //     { "data": "Sources of Food" },
+    //     { "data": "Vitamins & Minerals" },
+    //     { "data": "Eating Habits" },
+    //     { "data": "Nutrients" },
+    //     { "data": "overall_score" },
+    //     { "data": "overall_grade" },
+    // ]
+     ,"columns": topics_list_column
     });
 }
-
+var topics_list_column = {};
+var topics_list_count = 0;
 function getChapterGraph(school_name,chapter_id,chapter_name){
 	$.ajax({
 		type:"POST",
@@ -620,22 +672,30 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 		url:"getChapterGraph.php",
 		data: {school_name:school_name,chapter_id:chapter_id},
 		dataType:"JSON",
-		async:true,
+		async:false,
 		beforeSend: function() {
 			$('#chartContainer').html("<img src='images/uc.gif' height='80'>").show('fast');	
 		},
 		success:function(result){
 			//alert(response);
 			var response = result.final_array;
+			var topic_array = result.topic_array;
 			var topics_list = result.topics_list;
+			// topics_list_count = topics_list[topics_list.length - 1];
+
+			topics_list_count = topics_list.length;
+			console.log('topics_list_count: '+topics_list_count);
 			console.log(topics_list);
+			topics_list_column = result.topics_list;
+			console.log(topics_list_column);
 			if(topics_list){
-				var table_header_html = '<th>id</th><th style="width: 270px;">fullname</th>';
+				// var table_header_html = '<th>id</th><th style="width: 270px;">fullname</th>';
+				var table_header_html = '';
 				jQuery.each( topics_list, function( i, val ) {
-					table_header_html +='<th>'+val.name+'</th>';
+					table_header_html +='<th>'+val+'</th>';
 				});
-				table_header_html +='<th>Treasure</th><th>Overall</th>'
-				$("#example1_head_chapter").html(table_header_html);
+				// table_header_html +='<th>Treasure</th><th>Overall</th>'
+				$("#chapter_table_head").html(table_header_html);
 				// console.log(table_header_html);
 			}
 			if (response==0){
@@ -681,6 +741,7 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 		}	
 	});
 }
+
 
 function changeChapter(id,chapter_name){
 	console.log('chapter_id:'+id);

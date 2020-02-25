@@ -2,26 +2,26 @@
 
 // echo "<pre>"; print_r($_REQUEST); echo "</pre>"; die('end of code');
 
-    $columns = array( 
-        0 =>'id', 
-        1 =>'fullname',
-        2=> 'user_id',
-        3=> 'grade',
-        4=> 'time_spend',
-        5=> 'rank',
-    );
+    // $columns = array( 
+    //     0 =>'id', 
+    //     1 =>'fullname',
+    //     2=> 'user_id',
+    //     3=> 'grade',
+    //     4=> 'time_spend',
+    //     5=> 'rank',
+    // );
     $post_data = $_POST; 
     // echo "<pre>"; print_r($post_data); echo "</pre>"; die('end of code');
-    $limit = $post_data['length'];
-    $start = $post_data['start'];
+    $limit = isset($post_data['length'])?$post_data['length']:'';
+    $start = isset($post_data['start'])?$post_data['start']:0;
     $school_name = isset($post_data['school_name'])?$post_data['school_name']:'';
     $school_name = str_replace(',','',$school_name);
     $school_name = str_replace(' ','_',$school_name);
     $chapter_id = isset($post_data['chapter_id'])?$post_data['chapter_id']:'';
     $page_no = ($start/10)+1;
     // echo "<pre>"; print_r($school_name); echo "</pre>"; die('end of code');
-    $order = $columns[$post_data['order'][0]['column']];
-    $dir = $post_data['order'][0]['dir'];
+    // $order = $columns[$post_data['order'][0]['column']];
+    // $dir = $post_data['order'][0]['dir'];
     $page_count = 1;
     if($start>0){
         $page_count=$start+1;    
@@ -82,7 +82,7 @@
         }
         $final_column_array = array();
         foreach (array_unique($new_column_array) as $key => $value) {
-            $final_column_array[$key]['title'] = $value;
+            // $final_column_array[$key]['title'] = $value;
             $final_column_array[$key]['data'] =  $value;
         }
         // echo "<pre>"; print_r($final_column_array); echo "</pre>"; die('end of code');
@@ -93,9 +93,9 @@
                 "recordsTotal"    => intval($totalData),  
                 "recordsFiltered" => intval($totalFiltered), 
                 "data"            => $data,
-                "columns_head"         => array_unique($new_column_array),   
-                "topics_list"         => $topics_list,   
-                "columns"         => $final_column_array   
+                // "columns_head"    => array_unique($new_column_array),   
+                // "topics_list"     => $topics_list,   
+                // "column"         => json_encode($final_column_array,true),   
                 );
         
     echo json_encode($json_data);
