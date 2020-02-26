@@ -90,8 +90,8 @@
                 }
                 array_push($new_column_array, strtoupper($value['node']));
             }
-            $nestedData['Treasure'] = '<span>'.$user['treasure_grade'].'</span>';
-            $nestedData['Overall'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
+            $nestedData['Treasure'] = '<span class="'.$button_color_array[$user['treasure_grade']].'">'.$user['treasure_grade'].'</span>';
+            $nestedData['Overall'] = '<span class="'.$button_color_array[$user['overall_grade']].'">'.$user['overall_grade'].'</span>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
         $page_count++;

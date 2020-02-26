@@ -37,7 +37,7 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
 
     $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId='.$school_name.'&page=1&chapterId='.$chapter_id;
 	// $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=EMRS_Shendegaon&page=1&chapterId=6TS0001';
-
+    // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
 	$curl = curl_init();
     curl_setopt_array($curl, array(
         CURLOPT_URL => $url,

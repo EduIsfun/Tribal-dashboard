@@ -1,4 +1,5 @@
 <?php  
+// echo "<pre>"; print_r($_GET); echo "</pre>"; die('end of code');
 error_reporting(0);
 session_start();
 include('db_config.php');
@@ -7,6 +8,7 @@ include('functions.php');
 $sql = "SELECT tl.*,uas.class_rank,uas.global_rank,uas.alias_rank FROM `teacher_login` tl INNER JOIN `user_admin_settings` uas ON tl.`id`=uas.`user_id` WHERE tl.`userID`= '".$_SESSION['uids']."'";
 $result = mysqli_query($conn,$sql);
 $obj = mysqli_fetch_object($result);
+// echo "<pre>"; print_r($obj); echo "</pre>"; die('end of code');
 $mainschool = $obj->main_school;
 $schoollist = $mainschool."|". $obj->school;
 $schoolarray = str_replace("|", "','",  $schoollist );
@@ -76,7 +78,8 @@ if ($downloadtype =="pdf"){
 				$htmls.= '<td style="text-align: left;width:15%">Time Spent</td>  
 				<td style="text-align: left;width:15%">Overall Grade</td>
 			</tr>';
-}			
+}
+// echo "<pre>"; print_r($htmls); echo "</pre>"; die('end of code');			
 include("pdf/mpdf.php");	
 include('model/Teacher.class.php');
 include('model/Dashboard.class.php');
@@ -112,6 +115,7 @@ while($aliasrank = mysqli_fetch_object($aliasresult)){
 			
 			
 $user = $teacher->getuserResult($classid,$subject_id,$schoolname,$state_id,$city_id,$chapter_id,$subtopic);
+// echo "<pre>"; print_r($user); echo "</pre>"; die('end of user');
 while($userlist = mysqli_fetch_object($user)){
 	$learnincurrancy =0;
 	$coloravg='';

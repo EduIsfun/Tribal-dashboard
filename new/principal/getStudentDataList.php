@@ -25,13 +25,14 @@ include('functions.php');
     if($start>0){
         $page_count=$start+1;    
     }
+    // echo "<pre>"; print_r($page_count); echo "</pre>"; die('end of code');
     if(empty($post_data['search']['value'])){
         $url_condition = '';
         if($classid != 'all'){
             $url_condition = '&gradeId='.Romannumeraltonumber($classid);
         }
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_count.$url_condition;
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_no.$url_condition;
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(

@@ -236,61 +236,24 @@ function char_to_int(c){
 		default: return -1;
 	}
 }
-/* ---+-----+---- Get user result list with class---+---+--*/ 
-function changeClass(classid) {
-	//alert(classid);
-	// console.log(classid);
-	// $("#userresult").show();
-	$("#user_result_div").show();
-	$("#topic_user_html").hide();
-	$('#chapter').empty('');
-    var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
-    var school_id = $('#school_id').val();
-    var state_id = $('#state_id').val();
-    var city_id = $('#city_id').val();
-	$('li.active').removeClass('active');
-	$('#'+classid).addClass("active");
- 	var board_id = '<?php echo $board_id; ?>';
 
-	// $.ajax({
-	// 	type:"POST",
-	// 	cache:false,
-	// 	url:"action.php",
-	// 	data: "action=getClass&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id,
-	// 	success:function(response){
-	// 		$("#chapter").html(response);
-	// 		//$("chartContainer").html(response);
-	// 		console.log('response'+response);
-	// 	}
-	// });
-	$("#example1_head_row").show();
-	$("#example1_head_chapter").hide();
-	getClassStudentData(classid);
-	$.ajax({
-		type:"POST",
-		cache:false,
-		url:"action.php",
-		data: "action=getSubject&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id+"&board_id="+board_id,
-		success:function(response){
-			$("#chapter").html(response);
-			//console.log('response'+ response);
-		}
-	});
-	// console.log('school_id:'+school_id);
-	school_name = school_id.replace(/\,/g, '');
+function getClassGraph(school_name = '',classid='',subject_id=''){
+	school_name = school_name.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
 	// console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
-	school_id = 1;
-	board_id = 7;
 	var url_condition ='';
 	if(classid != 'all'){
-		url_condition = '&gradeId='+romanToInt(classid);
+		url_condition += '&gradeId='+romanToInt(classid);
+	}
+	if(subject_id != ''){
+		url_condition += '&subjectId='+subject_id;
 	}
 	console.log('in changeClass');
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
 	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId="+school_name+"&page=1"+url_condition;
+	console.log(url);
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -382,20 +345,170 @@ function changeClass(classid) {
 			chart.render();
 		}
 	});
+}
+/* ---+-----+---- Get user result list with class---+---+--*/ 
+function changeClass(classid) {
+	//alert(classid);
+	// console.log(classid);
+	// $("#userresult").show();
+	$("#user_result_div").show();
+	$("#topic_user_html").hide();
+	$('#chapter').empty('');
+    var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
+    var school_id = $('#school_id').val();
+    var state_id = $('#state_id').val();
+    var city_id = $('#city_id').val();
+	$('li.active').removeClass('active');
+	$('#'+classid).addClass("active");
+ 	var board_id = '<?php echo $board_id; ?>';
 
-	// for class and board wise subject
+	// $.ajax({
+	// 	type:"POST",
+	// 	cache:false,
+	// 	url:"action.php",
+	// 	data: "action=getClass&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id,
+	// 	success:function(response){
+	// 		$("#chapter").html(response);
+	// 		//$("chartContainer").html(response);
+	// 		console.log('response'+response);
+	// 	}
+	// });
+	$("#example1_head_row").show();
+	$("#example1_head_chapter").hide();
+	getClassStudentData(classid);
 	$.ajax({
 		type:"POST",
 		cache:false,
 		url:"action.php",
-		data: "action=get_board_class_wise_subjects&board_id="+board_id+"&class_id="+classid,
+		data: "action=getSubject&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id+"&board_id="+board_id,
 		success:function(response){
-			console.log('in change class subjecy response');
-			console.log(response);
-			$("#tab_subjects").html(response);
- 			$('#'+subject_id).attr("class", "active");
+			$("#chapter").html(response);
+			//console.log('response'+ response);
 		}
-	});	
+	});
+	// console.log('school_id:'+school_id);
+	school_name = school_id.replace(/\,/g, '');
+	school_name = school_name.replace(/\ /g, '_');
+	// console.log(school_name);
+	// school_name = 'EMRS_Shendegaon';
+	var url_condition ='';
+	if(classid != 'all'){
+		url_condition = '&gradeId='+romanToInt(classid);
+	}
+	console.log('in changeClass');
+	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
+	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
+	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId="+school_name+"&page=1"+url_condition;
+	$.ajax({
+		type:"POST",
+		cache:false,
+		url:"getApiCallResponse.php",
+		data: {url:url},
+		dataType: "JSON",
+		success:function(response){
+			console.log(response);
+			var total_count = response.total_count;
+			var Overall_score = response.Overall_score;
+			console.log('Overall_score:'+Overall_score);
+
+			var color = {'A1':'green','A2':'#46d246','B1':'#e6e600','B2':'yellow','C1':'#ff9900','C2':'#ffb84d','D':'blue','E1':'#B22222','E2':'red'};
+			var dynamicData = [];
+			var active_student_count = 0;
+			jQuery.each( Overall_score, function( i, val ) {
+			  	// console.log('i: '+i);
+			  	// console.log('val: '+val.Percent);
+			  	var percent = (val.Percent).replace(/\.0/g, '%');
+			  	// console.log(percent_array)
+			  	// var percent = val.Percent;
+			  	var student_count = val.StudentCount;
+			  	var grade = val.grade;
+			  	var student_percentage = 0
+
+			  	if(student_count>0){
+			  		student_percentage = parseInt((student_count/total_count) * 100);	
+			  	}
+			  	active_student_count += student_count;
+			  	dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
+			});
+			console.log(dynamicData);
+
+			// var dynamicData = [
+			// 	 { "y": 'A1', color: "green", bottomlabel: "A1 (90-100)" },
+			// 	 { "y": 'A2', color: "#46d246",bottomlabel: "A2 (80-90)" },
+			// 	 { "y": 'B1', color: "#e6e600", bottomlabel: "B1 (70-80)" },
+			// 	 { "y": 'B2', color: "yellow",bottomlabel: "B2 (60-70)" },
+			// 	 { "y": 'C1', color: "#ff9900", bottomlabel: "C1 (50-60)" },
+			// 	 { "y": 'C2', color: "#ffb84d", bottomlabel: "C2 (40-50)" },
+			// 	 { "y": 'D', color: "blue", bottomlabel: "D (30-40)"},
+			// 	 { "y": 'E1', color: "#B22222",bottomlabel: "E1 (20-30)" },
+			// 	 { "y": 'E2', color: "red", bottomlabel: "E2 (0-20)" },
+			// ]; 
+
+			var chart = new CanvasJS.Chart("chartContainer", {
+				theme: "dark2", // "light1", "light2", "dark1", "dark2"
+				exportEnabled: true,
+				animationEnabled: true,				
+				title: {
+					text: "Performance Chart",
+				},				
+				subtitles:[
+				  {
+					text: active_student_count,
+					verticalAlign: "center",
+					dockInsidePlotArea: false ,
+					fontSize: 30,
+					color:"#fff"
+				  },
+				 
+				  {
+					text: "Students",
+					padding: {
+					 top: 50,
+					 right: 1,
+					 bottom: 0,
+					 left: 2
+					},
+					verticalAlign: "center",
+					dockInsidePlotArea: false ,
+					fontSize: 20,
+					color:"#fff"
+				  }],
+								
+				
+				data: [{
+					//type: "pie",
+					type: "doughnut",
+					innerRadius: 50,
+					//yValueFormatString: "#,##0.00\"%00.4\"",
+					showInLegend: "true",
+					legendText: "{bottomlabel}",
+					yValueFormatString: "",
+					//indexLabel: "{label} ({y})",
+					dataPoints: dynamicData
+				}]			
+			});				
+			/* End pie charts used  */
+			chart.render();
+		}
+	});
+
+	// for class and board wise subject
+	if(classid != 'all'){
+		console.log('get subject called1');
+		$.ajax({
+			type:"POST",
+			cache:false,
+			url:"action.php",
+			data: "action=get_board_class_wise_subjects&board_id="+board_id+"&class_id="+classid,
+			success:function(response){
+				console.log('in change class subjecy response');
+				console.log(response);
+				$("#tab_subjects").html(response);
+	 			$('#'+subject_id).attr("class", "active");
+			}
+		});	
+	}
+	
 	
 	// $.ajax({
 	// 	type:"POST",
@@ -414,6 +527,8 @@ function changeClass(classid) {
 }
 
 function changeSubject(subject_id){
+	console.log('in changeSubject');
+	console.log(subject_id);
 	if (subject_id==undefined) {
 		subject_id='';
 	}
@@ -450,7 +565,8 @@ function changeSubject(subject_id){
 		// 		$("#subject_id").val(subject_id);
 		// 	}
 	// });
-		
+	getClassGraph(school_id,classid,subject_id);
+	return false;
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -1015,6 +1131,7 @@ function myFunction() {
 		}
 	});	
 
+	console.log('get subject called2');
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -1032,10 +1149,10 @@ function myFunction() {
 var datatableExample = '';
 function getdownload(){
 	var downloadtype = $('#downloadtype').val();
-	if(downloadtype == 'pdf') {
-		datatableExample.buttons(0,0).trigger();
-		return;
-	}
+	// if(downloadtype == 'pdf') {
+	// 	datatableExample.buttons(0,0).trigger();
+	// 	return;
+	// }
 
 	var state_id = $('#state_id').val();
 	var city_id = $('#city_id').val();
