@@ -89,7 +89,7 @@
                 }
                 array_push($new_column_array, $value['name']);
             }
-            $nestedData['Treasure'] = '<span>'.round($user['treasure_grade']).'</span>';
+            $nestedData['Treasure'] = '<span>'.$user['treasure_grade'].'</span>';
             $nestedData['Overall'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
