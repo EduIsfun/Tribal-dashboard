@@ -125,6 +125,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
+							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
@@ -199,6 +200,7 @@ function getClassStudentData(classid){
 	        { "data": "id" },
 	        { "data": "fullname" },
 	        { "data": "class" },
+	        { "data": "class_rank" },
 	        { "data": "rank" },
 	        { "data": "time_spend" },
 	        { "data": "grade" },
@@ -283,7 +285,9 @@ function getClassGraph(school_name = '',classid='',subject_id=''){
 			  		student_percentage = parseInt((student_count/total_count) * 100);	
 			  	}
 			  	active_student_count += student_count;
-			  	dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
+			  	if(student_percentage>1){
+			  		dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
+			  	}
 			});
 			console.log(dynamicData);
 
@@ -428,7 +432,9 @@ function changeClass(classid) {
 			  		student_percentage = parseInt((student_count/total_count) * 100);	
 			  	}
 			  	active_student_count += student_count;
-			  	dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
+			  	if(student_percentage > 1){
+			  		dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
+			  	}
 			});
 			console.log(dynamicData);
 

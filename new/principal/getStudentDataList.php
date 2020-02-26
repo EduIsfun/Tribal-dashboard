@@ -71,16 +71,18 @@ include('functions.php');
     }
 
     $data = array();
+    $button_color_array = array('A1'=>'greenr12','A2'=>'greenr2','B1'=>'yello1','B2'=>'yello2','C1'=>'oran1','C2'=>'oran2','D'=>'blue2','E1'=>'red','E2'=>'red1'); 
     if(!empty($user_array)){    
         foreach ($user_array as $user){
             // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             $nestedData['class'] = '<span>'.$user['class'].'</span>';
-            $nestedData['grade'] = (isset($user['grade']))?'<span>'.$user['grade'].'</span>':'E2';
+            $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';
+            $nestedData['grade'] = (isset($user['grade']))?'<span class="'.$button_color_array[$user['grade']].'" >'.$user['grade'].'</span>':'E2';
             $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
             $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
-            $nestedData['rank'] = '<span>'.$user['emrs_rank'].'</span>';
+            $nestedData['rank'] = '<div class="dark"><span>'.$user['emrs_rank'].'</span></div>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
         $page_count++;
