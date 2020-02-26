@@ -97,8 +97,8 @@
         }
         $final_column_array = array();
         $i=0;
-        array_push($new_column_array, 'overall_score');
-        array_push($new_column_array, 'overall_grade');
+        array_push($new_column_array, 'Treasure');
+        array_push($new_column_array, 'Overall');
         foreach (array_unique($new_column_array) as $key => $value) {
             $final_column_array[$i]['title'] = $value;
             $final_column_array[$i]['data'] =  $value;
