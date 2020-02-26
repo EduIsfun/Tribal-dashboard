@@ -78,7 +78,9 @@ include('functions.php');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             $nestedData['class'] = '<span>'.$user['class'].'</span>';
-            $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';
+            if(isset($user['class_rank'])){
+                $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';    
+            }
             $nestedData['grade'] = (isset($user['grade']))?'<span class="'.$button_color_array[$user['grade']].'" >'.$user['grade'].'</span>':'E2';
             $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
             $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';

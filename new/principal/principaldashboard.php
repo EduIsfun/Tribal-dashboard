@@ -125,7 +125,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
-							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>
+							<th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
@@ -180,7 +180,29 @@ function getClassStudentData(classid){
 	console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
-
+ 	if(classid == 'all'){
+ 		$("#class_rank_th").hide();
+ 		var table_column = [
+	        { "data": "id" },
+	        { "data": "fullname" },
+	        { "data": "class" },
+	        { "data": "rank" },
+	        { "data": "time_spend" },
+	        { "data": "grade" },
+	    ];
+ 	}else{
+ 		$("#class_rank_th").show();
+ 		var table_column = [
+	        { "data": "id" },
+	        { "data": "fullname" },
+	        { "data": "class" },
+	        { "data": "class_rank" },
+	        { "data": "rank" },
+	        { "data": "time_spend" },
+	        { "data": "grade" },
+	    ];
+ 	}
+ 	
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
  		$('#chapter_user_table_wrapper').hide();
@@ -196,15 +218,7 @@ function getClassStudentData(classid){
 	        "type": "POST",
 	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
 	    },
-	    "columns": [
-	        { "data": "id" },
-	        { "data": "fullname" },
-	        { "data": "class" },
-	        { "data": "class_rank" },
-	        { "data": "rank" },
-	        { "data": "time_spend" },
-	        { "data": "grade" },
-	    ]
+	    "columns": table_column
 	    });	
  	// }
 }

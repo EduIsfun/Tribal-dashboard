@@ -66,7 +66,7 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
         $chapter_graph=array();    
     }
     $chapter_array = array();
-    $color_array = array('A1'=>'#0f3e0f','A2'=>'#46d246','B1'=>'#e6e600','B2'=>'#ffff00','C1'=>'#ff9900','C2'=>'#ffb84d','D'=>'#0033cc','E1'=>'#b32400','E2'=>'#ff471a');
+    $color_array = array('A1'=>'#0f3e0f','A2'=>'#46d246','B1'=>'#e6e600','B2'=>'#ffff00','C1'=>'#ff9900','C2'=>'#ffb84d','D'=>'#0033cc','E1'=>'#b32400','E2'=>'#ff471a','NA'=>'grey2');
     if($chapter_graph){
     	$data_points_array = array();
     	// foreach ($chapter_graph as $key => $value) {
@@ -115,7 +115,7 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
         }
         $final_column_array[] = 'Treasure';
         $final_column_array[] = 'Overall';
-        // echo "<pre>"; print_r(json_encode($final_column_array)); echo "</pre>"; die('end of code');
+        // echo "<pre>"; print_r(json_encode($final_array)); echo "</pre>"; die('end of final_array');
         $return_array['topic_array'] = $topic_array;
         $return_array['topics_list'] = $final_column_array;
         $return_array['final_array'] = json_encode($final_array,true);
