@@ -736,19 +736,19 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="getListsubtopic")){
 	// $resultskill = $dashboard->getskillResult($chapter_id);
 	// $chaptercount =mysqli_num_rows($resultskill);
 	$html='';
-	$html.='<!DOCTYPE html><html><head>
-			<style>
-				@media only screen and (max-width: 992px) {
-					#example1_wrapper {
-					overflow-x: scroll;
-					}
-				}
-			</style>
-		</head>
-		<body>
-    <div class="" style="padding:10px;">    
-		<div class="">';
-	$html .= '<table id="example1" class="table table-bordered table-striped" data-page-length="25">';
+	// $html.='<!DOCTYPE html><html><head>
+	// 		<style>
+	// 			@media only screen and (max-width: 992px) {
+	// 				#example1_wrapper {
+	// 				overflow-x: scroll;
+	// 				}
+	// 			}
+	// 		</style>
+	// 	</head>
+	// 	<body>
+    // <div class="" style="padding:10px;">    
+	// 	<div class="">';
+	$html .= '<table id="topic_user_table" class="table table-bordered table-striped" data-page-length="25">';
 	$html.= '<thead>
 		<tr>
 			<th> No.</th>
@@ -984,23 +984,25 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="getListsubtopic")){
 		$html.='<td colspan="8" style="color:white;">No Record found</td>';
 		$html.='</tr>';
 	}
-	$html.="</div></div></body>
-			<script src='js/jquery.dataTables.min.js'></script>
-			<script src='js/dataTables.bootstrap.min.js'></script>
-			<script>
-				$(function () {
-					$('#example1').DataTable()
-					$('#example2').DataTable({
-						'paging'      : true,
-						'lengthChange': false,
-						'searching'   : false,
-						'ordering'    : true,
-						'info'        : true,
-						'autoWidth'   : false
+
+	// $html.="</div></div></body>
+	// 		<script src='js/jquery.dataTables.min.js'></script>
+	// 		<script src='js/dataTables.bootstrap.min.js'></script>
+	// 		<script>
+	// 			$(function () {
+	// 				$('#example1').DataTable()
+	// 				$('#example2').DataTable({
+	// 					'paging'      : true,
+	// 					'lengthChange': false,
+	// 					'searching'   : false,
+	// 					'ordering'    : true,
+	// 					'info'        : true,
+	// 					'autoWidth'   : false
 						
-					})
-				})
-			</script></html>";
+	// 				})
+	// 			})
+	// 		</script></html>";
+	// $html.="</div></div>";
 	$html.='</table>';
 	echo $html;
 	die();

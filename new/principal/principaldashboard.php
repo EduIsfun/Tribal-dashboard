@@ -129,25 +129,13 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
 						</tr>
-						<!-- <tr role="row" id="example1_head_chapter" style="display: none">
-							<th>id</th>
-							<th style="width: 270px;">fullname</th>
-							<th>Diseases</th>
-							<th>Nutrition</th>
-							<th>Sources of Food</th>
-							<th>Vitamins &amp; Minerals</th>
-							<th>Eating Habits</th>
-							<th>Nutrients</th>
-							<th>Treasure</th>
-							<th>Overall</th>
-						</tr> -->
 					</thead>
 				</table>
 				<table id="chapter_user_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
 					<thead id="chapter_table_head"></thead>
 				</table>
 			</div>
-
+			<div id="topic_user_html" class="table-responsive dash-table"></div>
 			<div class="middle-bg"></div>
 		</div>
 		<div class="col-md-3 no-padd">
@@ -254,6 +242,7 @@ function changeClass(classid) {
 	// console.log(classid);
 	// $("#userresult").show();
 	$("#user_result_div").show();
+	$("#topic_user_html").hide();
 	$('#chapter').empty('');
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
@@ -572,7 +561,9 @@ function changeSubject(subject_id){
 function getChapterDatatable(school_name,chapter_id){
 	$("#example1_head_row").hide();
 	$("#example1_head_chapter").hide();
-	$("#user_list_table_wrapper").hide();
+	$("#user_list_table_wrapper").hide();	
+	// $('#chapter_user_table_wrapper').empty();
+
 	$.ajax({
         type: 'POST',
         dataType: 'json',
@@ -583,8 +574,8 @@ function getChapterDatatable(school_name,chapter_id){
         	if ( $.fn.DataTable.isDataTable('#chapter_user_table') ) {
 			  $('#chapter_user_table').DataTable().destroy();
 			}
-
 			$('#chapter_user_table tbody').empty();
+			$('#chapter_user_table thead').empty();
             $('#chapter_user_table').DataTable({
                 dom: "Bfrtip",
                 data: d.data,
@@ -717,12 +708,11 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 			topics_list_column = result.topics_list;
 			console.log(topics_list_column);
 			if(topics_list){
-				// var table_header_html = '<th>id</th><th style="width: 270px;">fullname</th>';
+
 				var table_header_html = '';
 				jQuery.each( topics_list, function( i, val ) {
 					table_header_html +='<th>'+val+'</th>';
 				});
-				// table_header_html +='<th>Treasure</th><th>Overall</th>'
 				// setTimeout(function() { 
 			 //        // $("#chapter_table_head").html(table_header_html);
 			 //    }, 2000);
@@ -778,7 +768,9 @@ function changeChapter(id,chapter_name){
 	console.log('chapter_id:'+id);
 	console.log('chapter_name:'+chapter_name);
 	$("#userresult").hide();
+	$("#topic_user_html").hide();
 	$("#user_result_div").show();
+	$("#chapter_user_table").html('');
 
 	var class_id = $('#class_id').val();
     var subject_id = $("#subject_id").val();
@@ -869,6 +861,7 @@ function changeTopic(id,sval){
 	//$('#chapter').empty('');
      //console.log('subject_id' + subject_id);
     $("#user_result_div").hide();
+    $("#topic_user_html").show();
 	//lert(sval);
 	var classid=$('#class_id').val();
 	var school_id = $('#school_id').val();
@@ -882,10 +875,10 @@ function changeTopic(id,sval){
 			url:"action.php",
 			data: "action=getListsubtopic&subject_id="+subject_id+"&classid="+classid+"&school_id="+school_id+"&state_id="+state_id+"&city_id="+city_id+"&subtopic="+id,
 			beforeSend: function() {
-				$('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
+				// $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
 			},
 			success:function(response){
-				$("#userresult").html(response);
+				$("#topic_user_html").html(response);
 				//console.log('id'+ id);
 			}
 		});

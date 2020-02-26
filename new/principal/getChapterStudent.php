@@ -27,8 +27,8 @@
         $page_count=$start+1;    
     }
     if(empty($post_data['search']['value'])){
-        // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=".$school_name."&page=".$page_no."&chapterId=".$chapter_id;
-        $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=EMRS_Shendegaon&page=1&chapterId=6TS0001';
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=".$school_name."&page=".$page_no."&chapterId=".$chapter_id;
+        // $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId=EMRS_Shendegaon&page=1&chapterId=6TS0001';
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -50,7 +50,7 @@
         // echo "<pre>"; print_r($response); echo "</pre>"; die('end of code');
         $user_array = isset($response['chapter']['Overall_score'])?$response['chapter']['Overall_score']:array();
         $topics_list = $response['chapter']['topics'];
-        // echo "<pre>"; print_r($response['chapter']['Overall_score']); echo "</pre>"; die('end of code');
+        // echo "<pre>"; print_r($topics_list); echo "</pre>"; die('end of code');
         $err = curl_error($curl);
         curl_close($curl);
         $totalData = $response['chapter']['total_count']; // need total count from api
@@ -71,12 +71,26 @@
             // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="#" target="_blank">'.$user['name'].'  </a></span>';  
-            foreach ($user['score'] as $key => $value) {
-                $nestedData[$value['chapter_name']]='<span class="'.$button_color_array[$value['grade']].'">'. $value['grade'].'</span>';
-                array_push($new_column_array, $value['chapter_name']);
+            // foreach ($user['score'] as $key => $value) {
+            //     $nestedData[$value['chapter_name']]='<span class="'.$button_color_array[$value['grade']].'">'. $value['grade'].'</span>';
+            //     array_push($new_column_array, $value['chapter_name']);
+            // }
+            // echo "<pre>"; print_r($topics_list); echo "</pre>"; die('end of code');
+            foreach ($topics_list as $key => $value) {
+                $is_match = 0;
+                foreach ($user['score'] as $ukey => $uvalue) {
+                    if(trim($value['name']) == trim($uvalue['chapter_name'])){
+                        $is_match = 1;
+                        $nestedData[$uvalue['chapter_name']]='<span class="'.$button_color_array[$uvalue['grade']].'">'.$uvalue['grade'].'</span>';       
+                    }
+                }
+                if(!$is_match){
+                    $nestedData[$value['name']]='<span class="grey2">NA</span>';
+                }
+                array_push($new_column_array, $value['name']);
             }
-            $nestedData['overall_score'] = '<span>'.round($user['overall_score']).'</span>';
-            $nestedData['overall_grade'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
+            $nestedData['Treasure'] = '<span>'.round($user['treasure_grade']).'</span>';
+            $nestedData['Overall'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
         $page_count++;
@@ -86,13 +100,13 @@
         array_push($new_column_array, 'overall_score');
         array_push($new_column_array, 'overall_grade');
         foreach (array_unique($new_column_array) as $key => $value) {
-            // $final_column_array[$key]['title'] = $value;
+            $final_column_array[$i]['title'] = $value;
             $final_column_array[$i]['data'] =  $value;
             $i++;
         }
         // echo "<pre>"; print_r($final_column_array); echo "</pre>"; die('end of code');
     }
-    // echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
+    // echo "<pre>"; print_r($final_column_array); echo "</pre>"; die('end of code');
     $json_data = array(
                 // "draw"            => intval($post_data['draw']),  
                 "recordsTotal"    => intval($totalData),  
