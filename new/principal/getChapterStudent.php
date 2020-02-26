@@ -77,17 +77,18 @@
             // }
             // echo "<pre>"; print_r($topics_list); echo "</pre>"; die('end of code');
             foreach ($topics_list as $key => $value) {
+                // echo "<pre>"; print_r($value); echo "</pre>"; die('end of code');
                 $is_match = 0;
                 foreach ($user['score'] as $ukey => $uvalue) {
                     if(trim($value['name']) == trim($uvalue['chapter_name'])){
                         $is_match = 1;
-                        $nestedData[$uvalue['chapter_name']]='<span class="'.$button_color_array[$uvalue['grade']].'">'.$uvalue['grade'].'</span>';       
+                        $nestedData[strtoupper($value['node'])]='<span class="'.$button_color_array[$uvalue['grade']].'">'.$uvalue['grade'].'</span>';       
                     }
                 }
                 if(!$is_match){
-                    $nestedData[$value['name']]='<span class="grey2">NA</span>';
+                    $nestedData[strtoupper($value['node'])]='<span class="grey2">NA</span>';
                 }
-                array_push($new_column_array, $value['name']);
+                array_push($new_column_array, strtoupper($value['node']));
             }
             $nestedData['Treasure'] = '<span>'.$user['treasure_grade'].'</span>';
             $nestedData['Overall'] = '<span class="greenr12">'.$user['overall_grade'].'</span>';
