@@ -78,7 +78,7 @@ include('functions.php');
     $button_color_array = array('A1'=>'greenr12','A2'=>'greenr2','B1'=>'yello1','B2'=>'yello2','C1'=>'oran1','C2'=>'oran2','D'=>'blue2','E1'=>'red','E2'=>'red1'); 
     if(!empty($user_array)){    
         foreach ($user_array as $user){
-            echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
+            // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             if(is_numeric($user['class'])){
