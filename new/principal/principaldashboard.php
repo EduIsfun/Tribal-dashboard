@@ -106,7 +106,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 				
 			</div>
 			<div class="table-responsive dash-table" id="user_result_div">	
-				<div class="row">
+				<!-- <div class="row">
 					<div id="export_section" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 						<span id="userresults"></span>
 						<select name="downloadtype" id="downloadtype" class="form-control input-sm">
@@ -117,15 +117,15 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						<input type="button" onclick="getdownload();" id="btn" class="btn btn-success name=" pdf"="" value="Export" style="margin-left:20px;">
 						<div class="dt-buttons btn-group" style="display: none; margin-right: 10px;"><button class="btn btn-default buttons-pdf buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>PDF</span></button> </div>
 					</div>
-				</div>
+				</div> -->
 				<!-- <table id="user_chapter_list" class="table sub_table1 main-table dataTable no-footer" style="width: 100%"></table> -->
 				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
-							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
-							<th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>
+							<th id="example1_class" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
+							<!-- <th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th> -->
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
@@ -154,24 +154,24 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 <script src="js/bootstrap.min.js"></script>	
 <script src='js/jquery.dataTables.min.js'></script>
 <script src='js/dataTables.bootstrap.min.js'></script>
-</html>
 
+
+<script src='https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js'></script>
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js'></script> -->
+<script src='js/export/pdfmake.min.js'></script>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js'></script>
+
+</html>
 <script>
-  $(function () {
-    //$('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    });
-    
-    
-  });
-</script>
-<script>
+
+function getImageData() {
+	var canvas = document.getElementsByClassName('canvasjs-chart-canvas');
+	return dataURL = canvas[0].toDataURL();
+}
 
 function getClassStudentData(classid){
 	var school_id = $('#school_id').val();
@@ -180,9 +180,10 @@ function getClassStudentData(classid){
 	console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
+ 	var table_column = "";
  	if(classid == 'all'){
- 		$("#class_rank_th").hide();
- 		var table_column = [
+ 		$("#class_rank_th").remove();
+ 		table_column = [
 	        { "data": "id" },
 	        { "data": "fullname" },
 	        { "data": "class" },
@@ -191,8 +192,9 @@ function getClassStudentData(classid){
 	        { "data": "grade" },
 	    ];
  	}else{
- 		$("#class_rank_th").show();
- 		var table_column = [
+ 		$("#example1_class").after('<th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>');
+ 		// $("#class_rank_th").show();
+ 		table_column = [
 	        { "data": "id" },
 	        { "data": "fullname" },
 	        { "data": "class" },
@@ -205,23 +207,64 @@ function getClassStudentData(classid){
  	
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
- 		$('#chapter_user_table_wrapper').hide();
- 		$('#user_list_table').DataTable().clear().destroy();
- 		$('#user_list_table').DataTable({
-	        "searching": false,
-	        "responsive": true,
-	        "processing": true,
-	        "serverSide": true,
-	        "ajax":{
-	        "url": 'getStudentDataList.php',
-	        "dataType": "json",
-	        "type": "POST",
-	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
-	    },
-	    "columns": table_column
-	    });	
- 	// }
+
+ 	var finalstr = school_name.replace(/[_-]/g, " "); 
+
+	$('#chapter_user_table_wrapper').hide();
+	$('#user_list_table').DataTable().clear().destroy();
+
+	$('#user_list_table').DataTable( {
+	"searching": true,
+    "responsive": true,
+    "processing": true,
+    "serverSide": false,
+    "ajax":{
+        "url": 'getStudentDataList.php',
+        "dataType": "json",
+        "type": "POST",
+        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
+	},
+    "dom": 'Bfrtip',
+    "buttons": [
+    	{
+    		extend: 'pdfHtml5',
+            //pageSize: 'A4',//A0 is the largest A5 smallest(A0,A1,A2,A3,legal,A4,A5,letter))
+            title: "School : "+ finalstr,
+			customize: function ( doc ) {
+				doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+				doc.content.splice( 0, 0, {
+					margin: [ 12, 12, 12, 12 ],
+					alignment: 'center',
+					image: getImageData(),
+					width: 560,
+					height: 250
+				});
+			}
+			// exportOptions: {
+			// 	columns: 'th:not(:first-child)'
+			// }
+		}
+        //'csv', 'excel', 'pdf'
+    ],
+    "columns": table_column
+});
+
+// $('#user_list_table').DataTable({
+//       "searching": false,
+//       "responsive": true,
+//       "processing": true,
+//       "serverSide": true,
+//       "ajax":{
+//       "url": 'getStudentDataList.php',
+//       "dataType": "json",
+//       "type": "POST",
+//       "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
+//   },
+//   "columns": table_column
+//   });	
+// }
 }
+
 function romanToInt(str1) {
 	if(str1 == null) return -1;
 	var num = char_to_int(str1.charAt(0));
@@ -818,8 +861,10 @@ function getChapterDatatableOld(school_name,chapter_id){
      ,"columns": topics_list_column
     });
 }
+
 var topics_list_column = {};
 var topics_list_count = 0;
+
 function getChapterGraph(school_name,chapter_id,chapter_name){
 	$.ajax({
 		type:"POST",
@@ -898,7 +943,6 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 		}	
 	});
 }
-
 
 function changeChapter(id,chapter_name){
 	console.log('chapter_id:'+id);
@@ -991,7 +1035,6 @@ function changeChapter(id,chapter_name){
 	// 	}	
 	// });
 }
-
 
 function changeTopic(id,sval){
 	//$('#chapter').empty('');

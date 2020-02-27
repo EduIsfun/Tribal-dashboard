@@ -12,15 +12,15 @@ include('functions.php');
     );
     $post_data = $_POST; 
     // echo "<pre>"; print_r($post_data); echo "</pre>"; die('end of code');
-    $limit = $post_data['length'];
-    $start = $post_data['start'];
+    $limit = isset($post_data['length'])?$post_data['length']:'';
+    $start = isset($post_data['start'])?$post_data['start']:0;
     $school_name = isset($post_data['school_id'])?$post_data['school_id']:'';
     $board_id = isset($post_data['board_id'])?$post_data['board_id']:'';
     $classid = isset($post_data['classid'])?$post_data['classid']:'';
     $page_no = ($start/10)+1;
     // echo "<pre>"; print_r($page_no); echo "</pre>"; die('end of code');
-    $order = $columns[$post_data['order'][0]['column']];
-    $dir = $post_data['order'][0]['dir'];
+    $order = isset($post_data['order'])?$columns[$post_data['order'][0]['column']]:'';
+    $dir = isset($post_data['order'][0]['dir'])?$post_data['order'][0]['dir']:'';
     $page_count = 1;
     if($start>0){
         $page_count=$start+1;    
@@ -32,7 +32,7 @@ include('functions.php');
             $url_condition = '&gradeId='.Romannumeraltonumber($classid);
         }
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_no.$url_condition;
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=all".$url_condition;
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -92,7 +92,7 @@ include('functions.php');
     }
     // echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
     $json_data = array(
-                "draw"            => intval($post_data['draw']),  
+                "draw"            => isset($post_data['draw'])?intval($post_data['draw']):'',  
                 "recordsTotal"    => intval($totalData),  
                 "recordsFiltered" => intval($totalFiltered), 
                 "data"            => $data   
