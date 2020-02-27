@@ -310,10 +310,7 @@ function getClassGraph(school_name = '',classid='',subject_id=''){
 	if((classid == '') || (classid != 'all')){
 		// console.log('in');
 		// classid = romanToInt(classid);
-		if(classid >= 1){
-			// console.log('classid:'+classid);
-			url_condition += '&gradeId='+classid;
-		}
+		url_condition += '&gradeId='+classid;
 	}
 
 	if(subject_id != ''){
