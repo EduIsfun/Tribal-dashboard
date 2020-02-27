@@ -57,12 +57,13 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 				<div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
 					<ul class="list-group">
 						<li class="active" id="all">
-							<a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
-							<div class="d-flex w-100 justify-content-start align-items-center">
-								<img src="images/key.png" style="opacity: .6;" alt="" /> &nbsp 
-								<span name="classid" id="classid" onclick="changeClass('all');" class="menu-collapsed">Class </span>
-								<span class="submenu-icon"></span>	
-							</div>
+							<a href="principaldashboard.php" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-start align-items-center">
+									<img src="images/key.png" style="opacity: .6;" alt="" /> &nbsp 
+									<!-- <span name="classid" id="classid" onclick="changeClass('all');" class="menu-collapsed">Class </span> -->
+									<span name="classid" id="classid" class="menu-collapsed">Class </span>
+									<span class="submenu-icon"></span>	
+								</div>
 							</a>
 							<input type="hidden" name="class_id" id="class_id">
 							<input type="hidden" name="subject_id" id="subject_id">						
@@ -174,14 +175,15 @@ function getImageData() {
 	return dataURL = canvas[0].toDataURL();
 }
 
-function getClassStudentData(classid){
+function getClassStudentData(classid,subject_id=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	console.log(school_name);
+	// console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
  	var table_column = "";
+	console.log(classid);
  	if(classid == 'all'){
  		$("#class_rank_th").remove();
  		table_column = [
@@ -223,7 +225,7 @@ function getClassStudentData(classid){
         "url": 'getStudentDataList.php',
         "dataType": "json",
         "type": "POST",
-        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
+        "data":{'school_id': school_name,'board_id':board_id,'classid':classid,'subject_id':subject_id}
 	},
     "dom": 'Bfrtip',
     "buttons": [
@@ -301,18 +303,15 @@ function char_to_int(c){
 function getClassGraph(school_name = '',classid='',subject_id=''){
 	school_name = school_name.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	console.log("school_name:"+school_name);
-	console.log('classid:'+classid);
-	console.log('subject_id:'+subject_id);
+	// console.log("school_name:"+school_name);
+	// console.log('classid:'+classid);
+	// console.log('subject_id:'+subject_id);
 
 	var url_condition ='';
 	if((classid == '') || (classid != 'all')){
-		console.log('in');
-		classid = romanToInt(classid);
-		if(classid >= 1){
-			console.log('classid:'+classid);
-			url_condition += '&gradeId='+classid;
-		}
+		// console.log('in');
+		// classid = romanToInt(classid);
+		url_condition += '&gradeId='+classid;
 	}
 
 	if(subject_id != ''){
@@ -330,10 +329,10 @@ function getClassGraph(school_name = '',classid='',subject_id=''){
 		data: {url:url},
 		dataType: "JSON",
 		success:function(response){
-			console.log(response);
+			// console.log(response);
 			var total_count = response.total_count;
 			var Overall_score = response.Overall_score;
-			console.log('Overall_score:'+Overall_score);
+			// console.log('Overall_score:'+Overall_score);
 
 			var color = {'A1':'green','A2':'#46d246','B1':'#e6e600','B2':'yellow','C1':'#ff9900','C2':'#ffb84d','D':'blue','E1':'#B22222','E2':'red'};
 			var dynamicData = [];
@@ -349,14 +348,16 @@ function getClassGraph(school_name = '',classid='',subject_id=''){
 			  	var student_percentage = 0
 
 			  	if(student_count>0){
-			  		student_percentage = parseInt((student_count/total_count) * 100);	
+			  		student_percentage = ((student_count/total_count) * 100);	
 			  	}
 			  	active_student_count += student_count;
-			  	if(student_percentage>1){
+			  	// console.log('student_percentage 1:'+student_percentage);
+			  	if((student_percentage)>0){
+			  		student_percentage = parseInt(student_percentage);
 			  		dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
 			  	}
 			});
-			console.log(dynamicData);
+			// console.log(dynamicData);
 
 			// var dynamicData = [
 			// 	 { "y": 'A1', color: "green", bottomlabel: "A1 (90-100)" },
@@ -426,6 +427,8 @@ function changeClass(classid) {
 	$("#topic_user_html").hide();
 	$("#class_id").val(classid);
 	$('#chapter').empty('');
+	$("#class_rank_th").remove();
+
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
     var state_id = $('#state_id').val();
@@ -465,9 +468,9 @@ function changeClass(classid) {
 	// school_name = 'EMRS_Shendegaon';
 	var url_condition ='';
 	if(classid != 'all'){
-		url_condition = '&gradeId='+romanToInt(classid);
+		url_condition = '&gradeId='+classid;
 	}
-	console.log('in changeClass');
+	// console.log('in changeClass');
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
 	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId="+school_name+"&page=1"+url_condition;
@@ -478,10 +481,10 @@ function changeClass(classid) {
 		data: {url:url},
 		dataType: "JSON",
 		success:function(response){
-			console.log(response);
+			// console.log(response);
 			var total_count = response.total_count;
 			var Overall_score = response.Overall_score;
-			console.log('Overall_score:'+Overall_score);
+			// console.log('Overall_score:'+Overall_score);
 
 			var color = {'A1':'green','A2':'#46d246','B1':'#e6e600','B2':'yellow','C1':'#ff9900','C2':'#ffb84d','D':'blue','E1':'#B22222','E2':'red'};
 			var dynamicData = [];
@@ -497,14 +500,16 @@ function changeClass(classid) {
 			  	var student_percentage = 0
 
 			  	if(student_count>0){
-			  		student_percentage = parseInt((student_count/total_count) * 100);	
+			  		student_percentage = ((student_count/total_count) * 100);	
 			  	}
 			  	active_student_count += student_count;
-			  	if(student_percentage > 1){
+			  	// console.log('student_percentage:'+student_percentage);
+			  	if((student_percentage) > 0){
+			  		student_percentage = parseInt(student_percentage);
 			  		dynamicData.push({ label: grade+" "+percent+"("+student_percentage+"%)", "y": student_count, color: color[grade], bottomlabel: grade+" "+"("+percent+")" });
 			  	}
 			});
-			console.log(dynamicData);
+			// console.log(dynamicData);
 
 			// var dynamicData = [
 			// 	 { "y": 'A1', color: "green", bottomlabel: "A1 (90-100)" },
@@ -568,15 +573,15 @@ function changeClass(classid) {
 
 	// for class and board wise subject
 	if(classid != 'all'){
-		console.log('get subject called1');
+		// console.log('get subject called1');
 		$.ajax({
 			type:"POST",
 			cache:false,
 			url:"action.php",
 			data: "action=get_board_class_wise_subjects&board_id="+board_id+"&class_id="+classid,
 			success:function(response){
-				console.log('in change class subjecy response');
-				console.log(response);
+				// console.log('in change class subjecy response');
+				// console.log(response);
 				$("#tab_subjects").html(response);
 	 			$('#'+subject_id).attr("class", "active");
 			}
@@ -601,12 +606,12 @@ function changeClass(classid) {
 }
 
 function changeSubject(subject_id){
-	console.log('in changeSubject');
-	console.log(subject_id);
+	// console.log('in changeSubject');
+	// console.log(subject_id);
 	if (subject_id==undefined) {
 		subject_id='';
 	}
-    
+    $("#class_rank_th").remove();
 	$('#chapter').empty('');
     //console.log('subject_id' + subject_id);
 	var classid=$('#class_id').val();
@@ -779,12 +784,12 @@ function getChapterDatatable(school_name,chapter_id){
 
 function getChapterDatatableOld(school_name,chapter_id){
 	// $('#userresult').html("<img src='images/uc.gif' height='80'>").show('fast');
-	console.log('in function');
+	// console.log('in function');
 	$("#example1_head_row").hide();
 	$("#example1_head_chapter").hide();
 
-	console.log('before getChapterGraph ');
-	console.log(topics_list_count);
+	// console.log('before getChapterGraph ');
+	// console.log(topics_list_count);
 	// $('#chapter_user_table').DataTable().clear().destroy();
 	// table = $('#chapter_user_table').DataTable({
  //      "processing": true, //Feature control the processing indicator.
@@ -896,10 +901,10 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 			// topics_list_count = topics_list[topics_list.length - 1];
 
 			topics_list_count = topics_list.length;
-			console.log('topics_list_count: '+topics_list_count);
-			console.log(topics_list);
+			// console.log('topics_list_count: '+topics_list_count);
+			// console.log(topics_list);
 			topics_list_column = result.topics_list;
-			console.log(topics_list_column);
+			// console.log(topics_list_column);
 			if(topics_list){
 
 				var table_header_html = '';
@@ -957,8 +962,8 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 }
 
 function changeChapter(id,chapter_name){
-	console.log('chapter_id:'+id);
-	console.log('chapter_name:'+chapter_name);
+	// console.log('chapter_id:'+id);
+	// console.log('chapter_name:'+chapter_name);
 	$("#userresult").hide();
 	$("#topic_user_html").hide();
 	$("#user_result_div").show();
@@ -989,9 +994,9 @@ function changeChapter(id,chapter_name){
     //     }
     // });
     getChapterGraph(school_id,id,chapter_name);
-	console.log('before chapter user data');
+	// console.log('before chapter user data');
     getChapterDatatable(school_id,id);
-    console.log('after chapter function');
+    // console.log('after chapter function');
     return false;
 	// $.ajax({
 	// 	type:"POST",
@@ -1083,7 +1088,7 @@ function changeTopic(id,sval){
 			// dataType:"josn",
 			success:function(chartData){
 			
-			console.log('chartData'+chartData);
+			// console.log('chartData'+chartData);
 			 
 			var your_object = JSON.parse(chartData);
 			// var json_text = JSON.stringify(your_object, null, 2);
@@ -1206,7 +1211,7 @@ function myFunction() {
 		}
 	});	
 
-	console.log('get subject called2');
+	// console.log('get subject called2');
 	$.ajax({
 		type:"POST",
 		cache:false,

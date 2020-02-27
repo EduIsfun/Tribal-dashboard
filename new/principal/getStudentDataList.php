@@ -30,7 +30,7 @@ include('functions.php');
     if(empty($post_data['search']['value'])){
         $url_condition = '';
         if($classid != 'all'){
-            $url_condition .= '&gradeId='.Romannumeraltonumber($classid);
+            $url_condition .= '&gradeId='.$classid;
         }
         if(!empty($subject_id)){
             $url_condition .= '&subjectId='.$subject_id;
@@ -86,7 +86,7 @@ include('functions.php');
             }else{
                 $nestedData['class'] = '<span>'.$user['class'].'</span>';
             }
-            if(isset($user['class_rank'])){
+            if($classid != 'all'){
                 $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';    
             }
             $nestedData['grade'] = (isset($user['grade']))?'<span class="'.$button_color_array[$user['grade']].'" >'.$user['grade'].'</span>':'E2';
