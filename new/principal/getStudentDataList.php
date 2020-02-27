@@ -86,7 +86,7 @@ include('functions.php');
             }else{
                 $nestedData['class'] = '<span>'.$user['class'].'</span>';
             }
-            if(isset($user['class_rank'])){
+            if($classid != 'all'){
                 $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';    
             }
             $nestedData['grade'] = (isset($user['grade']))?'<span class="'.$button_color_array[$user['grade']].'" >'.$user['grade'].'</span>':'E2';
