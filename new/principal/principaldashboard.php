@@ -119,11 +119,12 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 					</div>
 				</div> -->
 				<!-- <table id="user_chapter_list" class="table sub_table1 main-table dataTable no-footer" style="width: 100%"></table> -->
-				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
+				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer table-bordered" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
 							<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
-							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 240px;">Name</th>
+							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: 
+							activate to sort column ascending" style="width: 240px;">Name</th>
 							<th id="example1_class" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
 							<!-- <th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th> -->
 							<th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
@@ -232,8 +233,8 @@ function getClassStudentData(classid){
             title: "School : "+ finalstr,
 			customize: function ( doc ) {
 				doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-				doc.content.splice( 0, 0, {
-					margin: [ 12, 12, 12, 12 ],
+				doc.content.splice( 1, 0, {
+					margin: [ 12, 0, 0, 12 ],
 					alignment: 'center',
 					image: getImageData(),
 					width: 560,

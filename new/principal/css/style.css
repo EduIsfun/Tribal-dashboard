@@ -32,11 +32,23 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .header-top { 
     background: linear-gradient(to right, #6399b6, #8ab9c7);
-	padding: 8px 0;
+	padding: 3px 0;
+}
+button.dt-button.buttons-pdf.buttons-html5 {
+    padding: 5px 20px;
+    margin: 5px 10px;
+    border-radius: 5px;
+    background: #4a8499;
+    color: #fff;
 }
 .logo img{
 	display:block;
-	margin:11px auto;
+	margin:5px auto;
+  border-radius: 50px;
+  line-height: 50px;
+}
+.header-top .right-text li {
+    text-align: left;
 }
 .right-text {
   float: right;
