@@ -17,6 +17,7 @@ include('functions.php');
     $school_name = isset($post_data['school_id'])?$post_data['school_id']:'';
     $board_id = isset($post_data['board_id'])?$post_data['board_id']:'';
     $classid = isset($post_data['classid'])?$post_data['classid']:'';
+    $subject_id = isset($post_data['subject_id'])?$post_data['subject_id']:'';
     $page_no = ($start/10)+1;
     // echo "<pre>"; print_r($page_no); echo "</pre>"; die('end of code');
     $order = isset($post_data['order'])?$columns[$post_data['order'][0]['column']]:'';
@@ -29,7 +30,10 @@ include('functions.php');
     if(empty($post_data['search']['value'])){
         $url_condition = '';
         if($classid != 'all'){
-            $url_condition = '&gradeId='.Romannumeraltonumber($classid);
+            $url_condition .= '&gradeId='.Romannumeraltonumber($classid);
+        }
+        if(!empty($subject_id)){
+            $url_condition .= '&subjectId='.$subject_id;
         }
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
         $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=all".$url_condition;
@@ -77,7 +81,11 @@ include('functions.php');
             // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
-            $nestedData['class'] = '<span>'.$user['class'].'</span>';
+            if(is_numeric($user['class'])){
+                $nestedData['class'] = '<span>'.ConverToRoman($user['class']).'</span>';
+            }else{
+                $nestedData['class'] = '<span>'.$user['class'].'</span>';
+            }
             if(isset($user['class_rank'])){
                 $nestedData['class_rank'] = '<div class="dark"><span>'.$user['class_rank'].'</span></div>';    
             }

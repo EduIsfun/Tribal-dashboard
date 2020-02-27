@@ -67,15 +67,17 @@
         // $new_column_array = ['id','fullname','overall_score','overall_grade'];
         $new_column_array = ['id','fullname'];
         $button_color_array = array('A1'=>'greenr12','A2'=>'greenr2','B1'=>'yello1','B2'=>'yello2','C1'=>'oran1','C2'=>'oran2','D'=>'blue2','E1'=>'red','E2'=>'red1');    
+        // echo "<pre>"; print_r($user_array); echo "</pre>"; die('end of code');
         foreach ($user_array as $user){
             // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
             $nestedData['id'] = $page_count;
-            $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="#" target="_blank">'.$user['name'].'  </a></span>';  
+            $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             // foreach ($user['score'] as $key => $value) {
             //     $nestedData[$value['chapter_name']]='<span class="'.$button_color_array[$value['grade']].'">'. $value['grade'].'</span>';
             //     array_push($new_column_array, $value['chapter_name']);
             // }
             // echo "<pre>"; print_r($topics_list); echo "</pre>"; die('end of code');
+            $is_treasure_completed = 1;
             foreach ($topics_list as $key => $value) {
                 // echo "<pre>"; print_r($value); echo "</pre>"; die('end of code');
                 $is_match = 0;
@@ -87,10 +89,16 @@
                 }
                 if(!$is_match){
                     $nestedData[strtoupper($value['node'])]='<span class="grey2">NA</span>';
+                    $is_treasure_completed = 0;
                 }
                 array_push($new_column_array, strtoupper($value['node']));
             }
-            $nestedData['Treasure'] = '<span class="'.$button_color_array[$user['treasure_grade']].'">'.$user['treasure_grade'].'</span>';
+            if($is_treasure_completed){
+                $nestedData['Treasure'] = '<span class="'.$button_color_array[$user['treasure_grade']].'">'.$user['treasure_grade'].'</span>';
+            }else{
+                $nestedData['Treasure'] = '<span class="grey2">NA</span>';
+            }
+            
             $nestedData['Overall'] = '<span class="'.$button_color_array[$user['overall_grade']].'">'.$user['overall_grade'].'</span>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
