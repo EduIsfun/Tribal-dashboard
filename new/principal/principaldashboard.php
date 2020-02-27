@@ -174,7 +174,7 @@ function getImageData() {
 	return dataURL = canvas[0].toDataURL();
 }
 
-function getClassStudentData(classid){
+function getClassStudentData(classid,subject_id=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
@@ -224,7 +224,7 @@ function getClassStudentData(classid){
         "url": 'getStudentDataList.php',
         "dataType": "json",
         "type": "POST",
-        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
+        "data":{'school_id': school_name,'board_id':board_id,'classid':classid,'subject_id':subject_id}
 	},
     "dom": 'Bfrtip',
     "buttons": [
