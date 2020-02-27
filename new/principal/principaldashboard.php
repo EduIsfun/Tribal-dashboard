@@ -173,7 +173,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 </script>
 <script>
 
-function getClassStudentData(classid){
+function getClassStudentData(classid,subject_id=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
@@ -216,7 +216,7 @@ function getClassStudentData(classid){
 	        "url": 'getStudentDataList.php',
 	        "dataType": "json",
 	        "type": "POST",
-	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
+	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid,'subject_id':subject_id}
 	    },
 	    "columns": table_column
 	    });	
@@ -256,20 +256,28 @@ function char_to_int(c){
 function getClassGraph(school_name = '',classid='',subject_id=''){
 	school_name = school_name.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	// console.log(school_name);
-	// school_name = 'EMRS_Shendegaon';
+	console.log("school_name:"+school_name);
+	console.log('classid:'+classid);
+	console.log('subject_id:'+subject_id);
+
 	var url_condition ='';
-	if(classid != 'all'){
-		url_condition += '&gradeId='+romanToInt(classid);
+	if((classid == '') || (classid != 'all')){
+		console.log('in');
+		classid = romanToInt(classid);
+		if(classid >= 1){
+			console.log('classid:'+classid);
+			url_condition += '&gradeId='+classid;
+		}
 	}
+
 	if(subject_id != ''){
 		url_condition += '&subjectId='+subject_id;
 	}
-	console.log('in changeClass');
+	// console.log('in changeClass');
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=EMRS_Shendegaon&page=1&gradeId=VIII";
 	var url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId="+school_name+"&page=1"+url_condition;
-	console.log(url);
+	// console.log(url);
 	$.ajax({
 		type:"POST",
 		cache:false,
@@ -371,6 +379,7 @@ function changeClass(classid) {
 	// $("#userresult").show();
 	$("#user_result_div").show();
 	$("#topic_user_html").hide();
+	$("#class_id").val(classid);
 	$('#chapter').empty('');
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
@@ -586,6 +595,7 @@ function changeSubject(subject_id){
 		// 	}
 	// });
 	getClassGraph(school_id,classid,subject_id);
+	getClassStudentData(classid,subject_id);
 	return false;
 	$.ajax({
 		type:"POST",

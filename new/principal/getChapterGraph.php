@@ -75,7 +75,7 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
     	// 		$data_points_array['data_points'][$value1['grade']][$value['name']]['label']=$value['name'];
     	// 	}
     	// }
-    	// echo "<pre>"; print_r($data_points_array); echo "</pre>"; die('end of data_points_array');
+    	// echo "<pre>"; print_r($chapter_graph); echo "</pre>"; die('end of chapter_graph');
     	foreach ($chapter_graph as $key => $value) {
     		foreach ($value['score'] as $key => $value1) {
     			$chapter_array[$value1['grade']]['type'] = 'stackedColumn';
@@ -89,9 +89,11 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
     		}
     	}
     	$sort_column = array_column($chapter_array, 'name');
-
 		array_multisort($sort_column, SORT_ASC, $chapter_array);
-		// echo "<pre>"; print_r($chapter_array); echo "</pre>"; die('end of chapter_array');
+		
+        // echo "<pre>"; print_r($response['chapter']['topics']); echo "</pre>"; die('end of code');
+        $topic_list = array_column($response['chapter']['topics'],'name');
+
     	$final_array = array();
     	$i=0;
     	foreach ($chapter_array as $key => $value) {
@@ -100,14 +102,15 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
     		$final_array[$i]['showInLegend'] = $value['showInLegend'];
     		$final_array[$i]['yValueFormatString'] = $value['yValueFormatString'];
     		// $final_array[$i]['dataPoints'] = array();
+            // echo "<pre>"; print_r($value['dataPoints']); echo "</pre>"; die('end of code');
     		foreach ($value['dataPoints'] as $key1 => $value1) {
     			// echo "<pre>"; print_r($value1); echo "</pre>"; die('end of code');
-    			$final_array[$i]['dataPoints'][] = $value1;
+                $final_array[$i]['dataPoints'][] = $value1;    
     		}
     		$final_array[$i]['color'] = $value['color'];
     		$i++;
     	}
-
+        // echo "<pre>"; print_r($final_array); echo "</pre>"; die('end of code');
         $topic_array = $response['chapter']['topics'];
         $final_column_array = array('id','fullname');
         foreach ($topic_array as $key => $value) {
