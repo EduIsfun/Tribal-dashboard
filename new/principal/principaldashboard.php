@@ -309,7 +309,7 @@ function getClassGraph(school_name = '',classid='',subject_id=''){
 	var url_condition ='';
 	if((classid == '') || (classid != 'all')){
 		// console.log('in');
-		classid = romanToInt(classid);
+		// classid = romanToInt(classid);
 		if(classid >= 1){
 			// console.log('classid:'+classid);
 			url_condition += '&gradeId='+classid;
@@ -470,7 +470,7 @@ function changeClass(classid) {
 	// school_name = 'EMRS_Shendegaon';
 	var url_condition ='';
 	if(classid != 'all'){
-		url_condition = '&gradeId='+romanToInt(classid);
+		url_condition = '&gradeId='+classid;
 	}
 	// console.log('in changeClass');
 	// var url="https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId="+school_name+"&page=1";
@@ -613,7 +613,7 @@ function changeSubject(subject_id){
 	if (subject_id==undefined) {
 		subject_id='';
 	}
-    
+    $("#class_rank_th").remove();
 	$('#chapter').empty('');
     //console.log('subject_id' + subject_id);
 	var classid=$('#class_id').val();
