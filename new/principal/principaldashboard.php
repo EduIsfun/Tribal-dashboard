@@ -169,7 +169,7 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 
 </html>
 <script>
-
+var finaltitle="";
 function getImageData() {
 	var canvas = document.getElementsByClassName('canvasjs-chart-canvas');
 	return dataURL = canvas[0].toDataURL();
@@ -210,8 +210,16 @@ function getClassStudentData(classid,subject_id=''){
  	
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
+ 	var finalschool= school_name.replace(/[_-]/g, " "); 
 
- 	var finalstr = school_name.replace(/[_-]/g, " "); 
+ 	if (classid!='all') {
+ 		finaltitle = "School : "+ finalschool +"\nClass : "+classid;
+ 	}
+ 	else
+ 	{
+ 		finaltitle = "School : "+ finalschool;
+ 	}
+ 	
 
 	$('#chapter_user_table_wrapper').hide();
 	$('#user_list_table').DataTable().clear().destroy();
@@ -232,7 +240,7 @@ function getClassStudentData(classid,subject_id=''){
     	{
     		extend: 'pdfHtml5',
             //pageSize: 'A4',//A0 is the largest A5 smallest(A0,A1,A2,A3,legal,A4,A5,letter))
-            title: "School : "+ finalstr,
+            title: finaltitle,
 			customize: function ( doc ) {
 				doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
 				doc.content.splice( 1, 0, {
@@ -773,10 +781,32 @@ function getChapterDatatable(school_name,chapter_id){
 			$('#chapter_user_table tbody').empty();
 			$('#chapter_user_table thead').empty();
             $('#chapter_user_table').DataTable({
-                dom: "Bfrtip",
-                data: d.data,
+                "dom": 'Bfrtip',
+			    "buttons": [
+			    	{
+			    		extend: 'pdfHtml5',
+			            //pageSize: 'A4',//A0 is the largest A5 smallest(A0,A1,A2,A3,legal,A4,A5,letter))
+			            title: finaltitle,
+						customize: function ( doc ) {
+							doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+							doc.content.splice( 1, 0, {
+								margin: [ 12, 0, 0, 12 ],
+								alignment: 'center',
+								image: getImageData(),
+								width: 560,
+								height: 250
+							});
+						}
+						// exportOptions: {
+						// 	columns: 'th:not(:first-child)'
+						// }
+					}
+			        //'csv', 'excel', 'pdf'
+			    ],
+			    "columns": d.columns,
+                data: d.data
                 // destroy:true,
-                columns: d.columns
+                //columns: d.columns
             });
         }
     });
@@ -923,38 +953,35 @@ function getChapterGraph(school_name,chapter_id,chapter_name){
 				var dataval = JSON.parse(response);
 				var chart = new CanvasJS.Chart("chartContainer",
 				{
-				backgroundColor: "#ffffff",
-				title:{
-					text: chapter_name
-				},
-				axisY:{
-					title:"No of Students",
-				},
-				 axisX:{
-				  labelAutoFit: false,  
-				   labelMaxWidth: 100,  
-				   labelWrap: false,
-				   labelAngle: 20,
-				 },
-				toolTip: {
-					shared: true,
-					reversed: false,
-					contentFormatter: function (e) {
-					var content = " ";
-					for (var i = 0; i < e.entries.length; i++) {
-						if (e.entries[i].dataPoint.y!=0){
-						content += e.entries[i].dataSeries.name + " " + "<strong>" + e.entries[i].dataPoint.y + "</strong>";
-						content += "<br/>";
+					backgroundColor: "#ffffff",
+					title:{
+						text: chapter_name
+					},
+					axisY:{
+						title:"No of Students",
+					},
+					axisX:{
+					  labelAutoFit: false,  
+					   labelMaxWidth: 100,  
+					   labelWrap: false,
+					   labelAngle: 20,
+					},
+					toolTip: {
+						shared: true,
+						reversed: false,
+						contentFormatter: function (e) {
+						var content = " ";
+						for (var i = 0; i < e.entries.length; i++) {
+							if (e.entries[i].dataPoint.y!=0){
+							content += e.entries[i].dataSeries.name + " " + "<strong>" + e.entries[i].dataPoint.y + "</strong>";
+							content += "<br/>";
+							}
 						}
-					}
-					return content;
-				}
-					
-					
-				},
-				data: dataval
-			 });
-			
+						return content;
+					}	
+					},
+					data: dataval
+				});
 				chart.render();
 			}
 		}	
