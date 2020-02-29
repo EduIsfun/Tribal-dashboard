@@ -56,7 +56,8 @@ if (isset($_REQUEST['action']) && ($_REQUEST['action']=="get_board_class_wise_su
 	 	//$li_id = ( $li_count == 0 ) ? 'class="active"' : '';
 		//$res .="<li ".$li_id." >";
 		$res .="<li id='".$row->subjectID."' style='cursor: pointer;'>";
-		$res .="<a name='subject_id' id='subject_id' onclick='changeSubject(".$row->subjectID.");' data-toggle='tab'>".$row->subject."</a>";
+		$subject='"'.$row->subject.'"';
+		$res .="<a name='subject_id' id='subject_id' onclick='changeSubject(".$row->subjectID.",$subject);' data-toggle='tab'>".$row->subject."</a>";
 		$res .="</li>";
 		//$li_count++;
 	}			
