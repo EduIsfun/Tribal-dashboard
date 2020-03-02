@@ -21,6 +21,7 @@ $download = new Download();
 if (isset($_SESSION['schoolname']) && ($_SESSION['schoolname']!='')){
 	$schoolname =$_SESSION['schoolname'];
 	$schoolarray = str_replace("|", "','",  $schoolname );
+	// echo "<pre>"; print_r($schoolarray); echo "</pre>"; die('end of code');
 } else {
 	echo "<script>window.open('logout.php','_self')</script>";
 }	
@@ -175,11 +176,11 @@ function getImageData() {
 	return dataURL = canvas[0].toDataURL();
 }
 
-function getClassStudentData(classid,subject_id='',subject_name=''){
+function getClassStudentData(classid,subject_id=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	// console.log(school_name);
+	console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
  	var table_column = "";
@@ -211,19 +212,11 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
  	var finalschool= school_name.replace(/[_-]/g, " "); 
- 	var last_updated='<?php echo $lastupdatedtime;?>';
- 	var subject = "\nSubject : All Subjects";
-
- 	if (subject_name!='') {
- 		subject="\nSubject : "+subject_name;
- 	}
 
  	if (classid!='all') {
- 		finaltitle = "School : "+ finalschool +subject+"\nClass : "+classid+ "\nLast Updated : "+last_updated;
- 	}
- 	else
- 	{
- 		finaltitle = "School : "+ finalschool +subject+"\nLast Updated : "+last_updated;
+ 		finaltitle = "School : "+ finalschool +"\nClass : "+classid;
+ 	}else{
+ 		finaltitle = "School : "+ finalschool;
  	}
  	
 
@@ -234,7 +227,7 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
 	"searching": true,
     "responsive": true,
     "processing": true,
-    "serverSide": false,
+    "serverSide": true,
     "ajax":{
         "url": 'getStudentDataList.php',
         "dataType": "json",
@@ -317,14 +310,16 @@ function char_to_int(c){
 function getClassGraph(school_name = '',classid='',subject_id=''){
 	school_name = school_name.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	// console.log("school_name:"+school_name);
+	if(school_name.indexOf('|') != -1){
+	    school_name = school_name.replace(/\|/g, ',');
+	}
+	console.log('in getClassGraph');
+	console.log("school_name:"+school_name);
 	// console.log('classid:'+classid);
 	// console.log('subject_id:'+subject_id);
 
 	var url_condition ='';
 	if((classid == '') || (classid != 'all')){
-		// console.log('in');
-		// classid = romanToInt(classid);
 		url_condition += '&gradeId='+classid;
 	}
 
@@ -478,6 +473,11 @@ function changeClass(classid) {
 	// console.log('school_id:'+school_id);
 	school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
+	if(school_name.indexOf('|') != -1){
+	    school_name = school_name.replace(/\|/g, ',');
+	}
+	// console.log('in getClassGraph');
+	// console.log("school_name:"+school_name);
 	// console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
 	var url_condition ='';
@@ -619,10 +619,9 @@ function changeClass(classid) {
 		
 }
 
-function changeSubject(subject_id,subject_name=''){
+function changeSubject(subject_id){
 	// console.log('in changeSubject');
 	// console.log(subject_id);
-	//alert(subject_name);
 	if (subject_id==undefined) {
 		subject_id='';
 	}
@@ -660,7 +659,7 @@ function changeSubject(subject_id,subject_name=''){
 		// 	}
 	// });
 	getClassGraph(school_id,classid,subject_id);
-	getClassStudentData(classid,subject_id,subject_name);
+	getClassStudentData(classid,subject_id);
 	return false;
 	$.ajax({
 		type:"POST",

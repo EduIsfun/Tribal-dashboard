@@ -33,6 +33,9 @@ if(isset($_POST['school_name']) && (isset($_POST['chapter_id']))){
 	$school_name = $_POST['school_name'];
     $school_name = str_replace(',','',$school_name);
     $school_name = str_replace(' ','_',$school_name);
+    if (strpos($school_name, '|') !== false) {
+        $school_name = str_replace('|', ',', $school_name);
+    }
 	$chapter_id = $_POST['chapter_id'];
 
     $url = 'https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalchapterapi?schoolId='.$school_name.'&page=1&chapterId='.$chapter_id;

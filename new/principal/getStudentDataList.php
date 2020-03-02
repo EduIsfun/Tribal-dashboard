@@ -15,6 +15,10 @@ include('functions.php');
     $limit = isset($post_data['length'])?$post_data['length']:'';
     $start = isset($post_data['start'])?$post_data['start']:0;
     $school_name = isset($post_data['school_id'])?$post_data['school_id']:'';
+    if (strpos($school_name, '|') !== false) {
+        $school_name = str_replace('|', ',', $school_name);
+    }
+    // echo "<pre>"; print_r($school_name); echo "</pre>"; die('end of code');
     $board_id = isset($post_data['board_id'])?$post_data['board_id']:'';
     $classid = isset($post_data['classid'])?$post_data['classid']:'';
     $subject_id = isset($post_data['subject_id'])?$post_data['subject_id']:'';
@@ -36,7 +40,7 @@ include('functions.php');
             $url_condition .= '&subjectId='.$subject_id;
         }
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
-        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=all".$url_condition;
+        $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_no."".$url_condition;
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -65,7 +69,7 @@ include('functions.php');
         	$user_array = array();
         }
         // echo "<pre>"; print_r($user_array); echo "</pre>"; die('end of code api_response');
-        $totalData = $response['school']['total_count'];
+        $totalData = isset($response['school']['total_count'])?$response['school']['total_count']:0;
         $totalFiltered = $totalData;
         // echo "<pre>"; print_r($posts); echo "</pre>"; die("end of posts yoyo");
     }else {
@@ -78,7 +82,7 @@ include('functions.php');
     $button_color_array = array('A1'=>'greenr12','A2'=>'greenr2','B1'=>'yello1','B2'=>'yello2','C1'=>'oran1','C2'=>'oran2','D'=>'blue2','E1'=>'red','E2'=>'red1'); 
     if(!empty($user_array)){    
         foreach ($user_array as $user){
-            // echo "<pre>"; print_r($user); echo "</pre>"; die('end of code');
+            // echo "<pre>"; print_r($user); echo "</pre>"; //die('end of code');
             $nestedData['id'] = $page_count;
             $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
             if(is_numeric($user['class'])){
@@ -91,7 +95,7 @@ include('functions.php');
             }
             $nestedData['grade'] = (isset($user['grade']))?'<span class="'.$button_color_array[$user['grade']].'" >'.$user['grade'].'</span>':'E2';
             $nestedData['learning_score'] = '<span>'.$user['learning_score'].'</span>';
-            $nestedData['time_spend'] = '<div class="dark"><span> <ul class="time-inline">'.date('H:i:s', $user['time_spend']).'</ul></span></div>';
+            $nestedData['time_spend'] = '<div class="dark"><span>'.gmdate('H:i:s', round($user['time_spend'])).'</span></div>';
             $nestedData['rank'] = '<div class="dark"><span>'.$user['emrs_rank'].'</span></div>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;

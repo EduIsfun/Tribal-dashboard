@@ -17,6 +17,9 @@
     $school_name = isset($post_data['school_name'])?$post_data['school_name']:'';
     $school_name = str_replace(',','',$school_name);
     $school_name = str_replace(' ','_',$school_name);
+    if (strpos($school_name, '|') !== false) {
+        $school_name = str_replace('|', ',', $school_name);
+    }
     $chapter_id = isset($post_data['chapter_id'])?$post_data['chapter_id']:'';
     $page_no = ($start/10)+1;
     // echo "<pre>"; print_r($school_name); echo "</pre>"; die('end of code');
