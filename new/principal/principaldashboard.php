@@ -176,7 +176,7 @@ function getImageData() {
 	return dataURL = canvas[0].toDataURL();
 }
 
-function getClassStudentData(classid,subject_id=''){
+function getClassStudentData(classid,subject_id='',subject_name=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
@@ -212,11 +212,19 @@ function getClassStudentData(classid,subject_id=''){
  	// var is_chapter_active = $(".chapter_class").hasClass('active');
  	// if(is_chapter_active == false){
  	var finalschool= school_name.replace(/[_-]/g, " "); 
+ 	var last_updated='<?php echo $lastupdatedtime;?>';
+ 	var subject = "\nSubject : All Subjects";
+
+ 	if (subject_name!='') {
+ 		subject="\nSubject : "+subject_name;
+ 	}
 
  	if (classid!='all') {
- 		finaltitle = "School : "+ finalschool +"\nClass : "+classid;
- 	}else{
- 		finaltitle = "School : "+ finalschool;
+ 		finaltitle = "School : "+ finalschool +subject+"\nClass : "+classid+ "\nLast Updated : "+last_updated;
+ 	}
+ 	else
+ 	{
+ 		finaltitle = "School : "+ finalschool +subject+"\nLast Updated : "+last_updated;
  	}
  	
 
@@ -619,7 +627,7 @@ function changeClass(classid) {
 		
 }
 
-function changeSubject(subject_id){
+function changeSubject(subject_id,subject_name=''){
 	// console.log('in changeSubject');
 	// console.log(subject_id);
 	if (subject_id==undefined) {
@@ -659,7 +667,7 @@ function changeSubject(subject_id){
 		// 	}
 	// });
 	getClassGraph(school_id,classid,subject_id);
-	getClassStudentData(classid,subject_id);
+	getClassStudentData(classid,subject_id,subject_name);
 	return false;
 	$.ajax({
 		type:"POST",
