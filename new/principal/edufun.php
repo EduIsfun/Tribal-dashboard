@@ -1,47 +1,98 @@
 <?php 
 session_start();
-//error_reporting(E_ALL);
-//ini_set('display_errors', 1);
+// //error_reporting(E_ALL);
+ini_set('display_errors', 0);
 include('db_config.php');
 include('model/Teacher.class.php');
 global $conn;
 $teacher = new Teacher();
-$id = isset($_GET['id'])?$_GET['id']:'';
+// $id = isset($_GET['id'])?$_GET['id']:'';
 
-$result = $teacher->getStudentresult($id);
+// $result = $teacher->getStudentresult($id);
 
-$studentobj = mysqli_fetch_object($result);
-$userID=$currentUser = $studentobj->userID;
-$classinfo=$teacher->getClass($userID);
+// $studentobj = mysqli_fetch_object($result);
+// $userID=$currentUser = $studentobj->userID;
+// $classinfo=$teacher->getClass($userID);
 
-$class_enabled_arr =  explode(',', $classinfo->class_enabled);
-if (count($class_enabled_arr)>0){
-	$gradeforsel = $classinfo->class_enabled;
-} else {
-	$gradeforsel = $classinfo->grade;	
-}	
-$classesarray = explode(",",$gradeforsel);
+// $class_enabled_arr =  explode(',', $classinfo->class_enabled);
+// if (count($class_enabled_arr)>0){
+// 	$gradeforsel = $classinfo->class_enabled;
+// } else {
+// 	$gradeforsel = $classinfo->grade;	
+// }	
+// $classesarray = explode(",",$gradeforsel);
 
-if (isset($_POST) && (count($_POST)>0)) {
-	$selectgrade = $_POST['gradeenabled'];
-} else {
-	$querygrd = "SELECT c.grade FROM `chapter` c INNER JOIN knowledgekombat_skill ks  ON ks.`chapterID`=c.`chapterID`
-	INNER JOIN knowledgekombat_skill_attempt ksa  ON ks.`skillID`=ksa.`skillID` WHERE ksa.`userID` ='".$currentUser."'
-	ORDER BY c.grade ASC LIMIT 1 ";
-	$resultgrd = mysqli_query($conn,$querygrd);
-	$rowgrd = mysqli_fetch_object($resultgrd);
-	$selectgrade =$rowgrd->grade; 
-}	
-if (!empty($classinfo->school_id)){
-	$schoolinfo= $teacher->getschoolbycode($classinfo->school_id);
-	$schoolname =$schoolinfo->school;
-} else {
-	$schoolname =$classinfo->school;
-}	
+// if (isset($_POST) && (count($_POST)>0)) {
+// 	$selectgrade = $_POST['gradeenabled'];
+// } else {
+// 	$querygrd = "SELECT c.grade FROM `chapter` c INNER JOIN knowledgekombat_skill ks  ON ks.`chapterID`=c.`chapterID`
+// 	INNER JOIN knowledgekombat_skill_attempt ksa  ON ks.`skillID`=ksa.`skillID` WHERE ksa.`userID` ='".$currentUser."'
+// 	ORDER BY c.grade ASC LIMIT 1 ";
+// 	$resultgrd = mysqli_query($conn,$querygrd);
+// 	$rowgrd = mysqli_fetch_object($resultgrd);
+// 	$selectgrade =$rowgrd->grade; 
+// }	
+// if (!empty($classinfo->school_id)){
+// 	$schoolinfo= $teacher->getschoolbycode($classinfo->school_id);
+// 	$schoolname =$schoolinfo->school;
+// } else {
+// 	$schoolname =$classinfo->school;
+// }	
 
-$cityinfo=$teacher->get_userwise_city($userID);
+// $cityinfo=$teacher->get_userwise_city($userID);
 
+$selectgrade_for_url=$_GET['grade'];
+$currentUser=$_GET['id'];
+$selectgrade=Romannumeraltonumber($_GET['grade']);
+
+$url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalstudentdetails?student_id=$currentUser&grade=$selectgrade_for_url";
+//echo $url;
+$curl = curl_init();
+curl_setopt_array($curl, array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "GET",
+    CURLOPT_HTTPHEADER => array(
+      "accept: application/json",
+      "cache-control: no-cache",
+      "content-type: application/json"
+    ),
+));
+
+$response = json_decode(curl_exec($curl),true);
+
+//echo "<pre>"; print_r($response); echo "</pre>"; die('end of code');
+$err = curl_error($curl);
+curl_close($curl);
+// reset($response);
+// if($response){
+//     $data=reset($response);    
+// }else{
+//     $data=array();    
+// }
+//echo "<pre>"; print_r($response); echo "</pre>"; 
+$student_detail='';
+$global_rank='';
+$class_rank='';
+//$data_status=false;
+if (array_key_exists('student_detail', $response)) {
+	$student_detail=$response['student_detail'][0]['_source'];
+	$global_rank=$response['global_rank'];
+	$class_rank=$response['class_rank'];
+}
+else
+{
+	//$data_status=true;
+	echo "<pre>"; echo "No Data Found"; echo "</pre>"; 
+	exit;
+}
+//echo "<pre>"; print_r($student_detail); echo "</pre>"; 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +134,7 @@ $cityinfo=$teacher->get_userwise_city($userID);
 						<label class="col-md-2 control-label" for="name"> Name  </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-9">
-							<input id="name" name="name" type="text" placeholder="" value="<?php echo $studentobj->name; ?>" class="form-control inp-field" readonly>
+							<input id="name" name="name" type="text" placeholder="" value="<?php echo $student_detail['name']; ?>" class="form-control inp-field" readonly>
 						</div>
 					</div>
 					<div class="form-group">
@@ -91,18 +142,25 @@ $cityinfo=$teacher->get_userwise_city($userID);
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-9">
 						 <select id="gradeenabled" name="gradeenabled" class="form-control inp-field">
-						 <?php foreach ($classesarray as $key=>$value) { 
-								if ($selectgrade==$value) { $selected ="selected";} else { $selected='';}
-								$grdq= "SELECT count(*) as countgrd FROM knowledgekombat_skill_attempt ksa INNER JOIN
-								knowledgekombat_skill ks ON ksa.skillID=ks.skillID INNER JOIN chapter c ON
-								c.chapterID=ks.chapterID  WHERE (c.grade='".$value."' or 
-								c.grade='".Romannumeraltonumber($value)."') AND userID ='".$currentUser."'";
-								$grdres = mysqli_query($conn,$grdq);
-								$grdrow = mysqli_fetch_object($grdres);
-								if ($grdrow->countgrd>0){
-									echo '<option value='.$value.' '.$selected.'>'.$value.'</option>';
-								}
-							}		
+						 <?php 
+						    $selectgrade=0;
+ 							foreach ($student_detail['grades'] as $key => $value) {
+ 								$selectgrade = Romannumeraltonumber($student_detail['grade']);
+ 								if ($selectgrade==$value) { $selected ="selected";} else { $selected='';}
+ 								echo '<option value='.$value.' '.$selected.'>'.$value.'</option>';
+ 							}
+						    // 	foreach ($classesarray as $key=>$value) { 
+							// 	if ($selectgrade==$value) { $selected ="selected";} else { $selected='';}
+							// 	$grdq= "SELECT count(*) as countgrd FROM knowledgekombat_skill_attempt ksa INNER JOIN
+							// 	knowledgekombat_skill ks ON ksa.skillID=ks.skillID INNER JOIN chapter c ON
+							// 	c.chapterID=ks.chapterID  WHERE (c.grade='".$value."' or 
+							// 	c.grade='".Romannumeraltonumber($value)."') AND userID ='".$currentUser."'";
+							// 	$grdres = mysqli_query($conn,$grdq);
+							// 	$grdrow = mysqli_fetch_object($grdres);
+							// 	if ($grdrow->countgrd>0){
+							// 		echo '<option value='.$value.' '.$selected.'>'.$value.'</option>';
+							// 	}
+							// }		
 						?>
 						</select>
 							<!--<input id="name" name="name" type="text" placeholder="" value="<?php //echo $classinfo->class_enabled; ?>"class="form-control inp-field" readonly>-->
@@ -112,62 +170,47 @@ $cityinfo=$teacher->get_userwise_city($userID);
 						<label class="col-md-2 control-label" for="name"> City </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-9">
-							<input id="name" name="name" type="text" placeholder="" value="<?php echo $studentobj->city?>" class="form-control inp-field" readonly>
+							<input id="name" name="name" type="text" placeholder="" value="<?php echo $student_detail['city']; ?>" class="form-control inp-field" readonly>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-2 control-label" for="name"> School </label>
 						<label class="col-md-1 control-label">:</label>
 						<div class="col-md-9">
-							<input id="name" name="school" type="text" placeholder="" value="<?php echo $schoolname?>" class="form-control inp-field" readonly>
+							<input id="name" name="school" type="text" placeholder="" value="<?php echo $student_detail['school']; ?>" class="form-control inp-field" readonly>
 						</div>
 					</div>
 				</form>
 				</div>
 			</div>
-		<?php
-		$questiontime = "SELECT SUM(timePerQuestion)/COUNT(timePerQuestion) AS `timePerQuestion` FROM 
-		knowledgekombat_skill_attempt ksa INNER JOIN knowledgekombat_skill ks ON ksa.skillID=ks.skillID INNER JOIN
-		chapter c ON c.chapterID=ks.chapterID  WHERE timePerQuestion > 0 AND c.grade='".$selectgrade."'	AND 
-		userID 	='".$currentUser."'";
-		
-		$questionresult = mysqli_query($conn,$questiontime);
-		$questionrow = mysqli_fetch_array($questionresult);
-		?>
 			<div class="col-md-6">
 				<ul>  
 					<li class="col-md-4 col-sm-12 col-xs-12">
-					<div class="time_content">
+					<!-- <div class="time_content">
 						<div class="time">
 				 			<h2 class="tdtime">
 							<?php 
-							if ($questionrow['timePerQuestion']==""){	
+							if ($student_detail['total_time']==""){	
 								echo "0 Secs";
 							} else { 
-								echo number_format($questionrow['timePerQuestion'] , 2, '.', '')." Secs";	
+								echo gmdate('H:i:s', round($student_detail['total_time'])); 
+								//number_format($student_detail['total_time'] , 2, '.', '')." Secs";	
 							} ?> 
 							</h2>
 						</div>
 					</div>
-				 	<p class="time_cont_para">TIME PER QUESTIONS</p>
+				 	<p class="time_cont_para">TIME PER QUESTIONS</p> -->
 					</li>
-					<?php
-					$totaltime = "SELECT TIME_FORMAT(SEC_TO_TIME(ROUND(SUM(`time`))),'%HH : %iM : %SS') AS `time` FROM
-					knowledgekombat_chapter_time  kct INNER JOIN chapter c ON c.chapterID=kct.chapterID WHERE 
-					userID='".$currentUser."' AND c.grade='".$selectgrade."'";		
-					
-					$totalresult = mysqli_query($conn,$totaltime);			
-					$timetotalrow = mysqli_fetch_array($totalresult);	 
-					?>
 					<li class="col-md-4 col-sm-12 col-xs-12">
 					<div class="time_content">
 						<div class="time">
 							<h2 class="tdtime">
 							<?php 
-								if ($timetotalrow['time']==""){	
+								if ($student_detail['total_time']==""){	
 									echo "0" ;
 								} else { 
-									echo $timetotalrow['time'];
+									echo gmdate('H:i:s', round($student_detail['total_time'])); 
+									//echo $student_detail['total_time'];
 								} 
 							?> 
 							</h2>
@@ -175,22 +218,15 @@ $cityinfo=$teacher->get_userwise_city($userID);
 					</div>
 					<p class="time_cont_para">TOTAL TIME SPENT</p>				
 					</li>
-		 			<?php 
-					$tqasql = "select SUM(total_questions_answered) AS Totals from knowledgekombat_chapter_time  
-					kct INNER JOIN chapter c ON c.chapterID=kct.chapterID WHERE userID='".$currentUser."' AND 
-					c.grade='".$selectgrade."'";		
-					$tqaresult = mysqli_query($conn,$tqasql);
-					$tqarow = mysqli_fetch_array($tqaresult);	  
-					?>
 					<li class="col-md-4 col-sm-12 col-xs-12">
 					<div class="time_content">
 						<div class="time"> 
 							<h2>
 							<?php 
-							if ($tqarow['Totals']==""){	
+							if ($student_detail['total_que']==""){	
 								echo "0" ;
 							} else { 
-								echo $tqarow['Totals'];
+								echo $student_detail['total_que'];
 							} ?> 
 							</h2>
 						</div>
@@ -211,27 +247,16 @@ $cityinfo=$teacher->get_userwise_city($userID);
 				<ul>
 					<li class="col-md-2 col-sm-12 col-xs-12">
 					<p class="learning_para">LEARNING</p>
-					<h2 class="learning_head">CLASS <?php echo numberToRomanRepresentation($selectgrade);//$classinfo->grade;?>
+					<h2 class="learning_head">CLASS <?php echo $student_detail['grade'];//$classinfo->grade;?>
 					</h2>
 					<p class="learning_para">MATHS + SCIENCE</p>
 					</li>
 					<li class="col-md-2 col-sm-12 col-xs-12">
-			 		<?php 					
-					$overallquery  = "SELECT ROUND(SUM(progress)/COUNT(progress)) as overall_progress FROM 
-					knowledgekombat_chapter_time kct INNER JOIN chapter c ON c.chapterID=kct.chapterID WHERE 
-					userID='".$currentUser."' AND c.grade='".$selectgrade."'";		
-					$overallresult = mysqli_query($conn,$overallquery);
-					$overallrow = mysqli_fetch_assoc($overallresult);
-					?>
 					<div class="circle">
 						<div class="time">					 
 							<h2>
 							<?php 
-								if ($overallrow['overall_progress']=="") {	
-									echo "0" ;
-								} else { 
-									echo $overallrow['overall_progress'];
-								} 
+								echo $student_detail['prog'];
 							?> 
 							<br/><span></span></h2>
 							<p>percent</p>				 
@@ -246,46 +271,17 @@ $cityinfo=$teacher->get_userwise_city($userID);
 						<div class="circle">
 						<div class="time">
 					<?php 	
-					$classrankquery="SELECT userid, totalcount, rank FROM ( SELECT userid, totalcount, @r := IF(@c = totalcount, @r, @r + 1) rank, 
-					@c := totalcount  FROM ( SELECT ksa.userID, ((IFNULL(((AVG(ksa.learningCurrency)*20)/100),0))+ (IFNULL(((AVG(kta.knowledgeCurrency)*80)/1000),0))) AS totalcount FROM
-					knowledgekombat_skill_attempt  ksa INNER JOIN `user_school_details` usd ON ksa.`userID`=usd.`userID` 
-					left JOIN `knowledgekombat_treasure_attempt` kta ON kta.`userID`= usd.`userID` 
-					INNER JOIN knowledgekombat_skill ks ON ksa.skillID=ks.skillID 
-					INNER JOIN chapter c ON c.chapterID=ks.chapterID ";    
-					if (!empty($classinfo->school_id)){
-						$classrankquery.=" INNER Join school_master sm on sm.school_code= usd.school_id";
-					}
-					$classrankquery.=" WHERE 1=1 AND usd.city_id ='".$cityinfo->id."' AND
-					c.grade ='".$selectgrade."' "; 
-					if (!empty($classinfo->school_id)){
-						$classrankquery.="  AND sm.school = '".$schoolname."'";
-					} else {
-						$classrankquery.="  AND usd.school = '".$schoolname."'";
-					}
-					
-					$classrankquery.="  GROUP BY userid ORDER BY totalcount DESC) t CROSS JOIN ( SELECT @r := 0, 
-					@c := NULL  ) i ) q";
-					//echo $classrankquery;
-					$classrankresult = mysqli_query($conn,$classrankquery);
-					$classrankar =  array();
-					$totalcrank =0;
-					while($classrankobj = mysqli_fetch_object($classrankresult)){
-						if ( $classrankobj->userid==$currentUser){
-							$classrank=$classrankobj->rank;
-						}	
-						$totalcrank++;
-					}
+
 						
-					if($classrank=="") {	
-						echo "0" ;
-					} else { 
+					// if($classrank=="") {	
+					//	echo "0" ;
+					// } else { 
 						echo "<h2 style='font-size: 20px; text-align: center; padding-top: 15px; }'>";
-						echo $classrank;
+						echo $class_rank['rank'];
 						echo "<br>---------<br>";
-						echo $totalcrank;
+						echo $class_rank['total'];
 						echo "</h2>";
-						//echo $classrank."/".$totalcrank;
-					} 
+					// } 
 					?> 
 					</div></div>					 
 					<p class="cont_para1">CLASS RANK</p>
@@ -295,39 +291,15 @@ $cityinfo=$teacher->get_userwise_city($userID);
 					<div class="circle">
 						<div class="time">
 					<?php 	
-					$globalrankquery="SELECT userid, totalcount, rank FROM (SELECT userid, totalcount, @r := IF(@c = totalcount, @r, @r + 1) rank, 
-					@c := totalcount  FROM (";
-					$globalrankquery.=" SELECT ksa.`userID`,((IFNULL(((AVGAearningCurrency*20)/100),0))+ (IFNULL(((AVGknowledgeCurrency*80)/1000),0))) 
-					AS totalcount FROM skillaverage ksa LEFT JOIN treasureavg kta ON kta.`userID`= ksa.`userID` ";
-					if (!empty($classinfo->school_id)){
-						$globalrankquery.=" INNER Join school_master sm on sm.school_code= usd.school_id";
-					}				  
-					$globalrankquery.="WHERE 1=1 AND ksa.`userID`!=0 ";
-					$globalrankquery.=" GROUP BY userid ORDER BY totalcount DESC) t CROSS JOIN (SELECT
-					@r:=0,@c:=NULL)i) q";
-					$globalrankresult = mysqli_query($conn,$globalrankquery);
-					//echo $globalrankquery;
-					//echo mysqli_error($conn);
-					// print_r($globalrankresult);
-					//exit;
-					$totalgrank =0;
-					while($globalrankobj = mysqli_fetch_object($globalrankresult)){
-						if ( $globalrankobj->userid==$currentUser){
-							$globalrank=$globalrankobj->rank;
-						}	
-						$totalgrank++;
-					}
-					
-					if($globalrank=="") {	
-						echo "0" ;
-					} else { 
+					// if($globalrank=="") {	
+					//	echo "0" ;
+					// } else { 
 						echo "<h2 style='font-size: 20px; text-align: center; padding-top: 15px; }'>";
-						echo $globalrank;
+						echo $global_rank['rank'];
 						echo "<br>---------<br>";
-						echo $totalgrank;
+						echo $global_rank['total'];
 						echo "</h2>";
-						//echo $globalrank."/".$globalrank;
-					} 
+					// } 
 					?> 
 					</div></div>					 
 					<p class="cont_para1">GLOBAL RANK</p>
@@ -337,27 +309,15 @@ $cityinfo=$teacher->get_userwise_city($userID);
 					<div class="circle">
 						<div class="time">
 						<?php					
-						$query ="SELECT * FROM knowledgekombat_skill_attempt WHERE userID ='".$currentUser."' AND
-						skillAttemptID IN (SELECT MAX(skillAttemptID) FROM knowledgekombat_skill_attempt ksa 
-						INNER JOIN knowledgekombat_skill ks ON ksa.skillID=ks.skillID INNER JOIN chapter c ON 
-						c.chapterID=ks.chapterID WHERE userID ='".$currentUser."' AND c.`grade` ='".$selectgrade."'
-						GROUP BY ksa.skillID)";
-						$result = mysqli_query($conn,$query);
-						$totallearningcur = 0;
-						$totcount = 0;
-						while ($row3 = mysqli_fetch_assoc($result)){
-							$totallearningcur=$totallearningcur+$row3['learningCurrency'];
-							$totcount++;
-						}
-						if (($totallearningcur=="") || ($totallearningcur==0)) {	
+						if (($student_detail['learningCurrency']=="") || ($student_detail['learningCurrency']==0)) {	
 							echo "<h2>";
 							echo "0" ;
 							echo "</h2>";
 						} else { 
 							echo "<h2 style='font-size: 20px; text-align: center; padding-top: 15px; }'>";
-							echo $totallearningcur;
+							echo $student_detail['learningCurrency'];
 							echo "<br>---------<br>";
-							echo $totcount*100;
+							echo $student_detail['learningCurrency_total'];
 							echo "</h2>";
 						} 
 						?>
@@ -365,28 +325,20 @@ $cityinfo=$teacher->get_userwise_city($userID);
 					</div>			
 					<p class="cont_para1">TOTAL LEARNING CURRENCY</p>				
 					</li>
-					<li class="col-md-2 col-sm-12 col-xs-12">
-					<?php 					
-					$overallquery="SELECT ROUND(SUM(knowledgeCurrency)) as knowledgeCurrency,count(knowledgeCurrency)
-					as outof_knowledgeCurrency FROM `knowledgekombat_treasure_attempt` kta INNER JOIN chapter c ON
-					c.chapterID=kta.chapterID WHERE userID='".$currentUser."' AND c.grade='".$selectgrade."'";		
-					$overallresult = mysqli_query($conn,$overallquery);
-					$overallrow = mysqli_fetch_assoc($overallresult);			
-					?>			
+					<li class="col-md-2 col-sm-12 col-xs-12">		
 					<div class="circle">				
 						<div class="time">					
 			 			<?php 
-						if ($overallrow['knowledgeCurrency']=="") {	
+						if ($student_detail['knowledgeCurrency']=="") {	
 							echo "<h2>";
 							echo "0" ;
 							echo "</h2>";
 						} else { 
 							echo "<h2 style='font-size: 20px; text-align: center; padding-top: 15px; }'>";
-							echo $overallrow['knowledgeCurrency'];
+							echo $student_detail['knowledgeCurrency'];
 							echo "<br>---------<br>";
-							if ($overallrow['outof_knowledgeCurrency']>1) {	
-								$outof_knowledgeCurrency=$overallrow['outof_knowledgeCurrency']*1000;		
-								echo $outof_knowledgeCurrency;
+							if ($student_detail['knowledgeCurrency_total']>1) {			
+								echo $student_detail['knowledgeCurrency_total'];
 							} else {
 								echo "1000";
 							}
@@ -422,6 +374,7 @@ $cityinfo=$teacher->get_userwise_city($userID);
 			kct.`chapterID` = c.`chapterID` INNER JOIN `subject` s ON c.`subjectID` = s.`subjectID` WHERE 
 			c.grade='".$selectgrade."' and `userID` ='".$currentUser."' GROUP BY s.`subjectID` ORDER BY s.`sequence`
 			ASC";
+	 
 			$resultsubject = mysqli_query($conn,$sqlsubject);
 			$acc=0;	
 			$chcount =mysqli_num_rows($resultsubject);
@@ -827,8 +780,33 @@ for (i = 0; i < acc.length; i++) {
 
 
 $("#gradeenabled").change(function() {
- 		document.getElementById("userdetails").submit(); 
+ 	//document.getElementById("userdetails").submit(); 
+ 	var selected_grade=$("#gradeenabled").val();
+ 	var userid='<?php echo $currentUser; ?>';
+ 	//alert(selected_grade);
+ 	var grade = integer_to_roman(parseInt(selected_grade));
+ 	var url = "http://www.eduisfun.in/dashboard/new/principal/edufun.php?id="+userid+"&grade="+grade;
+
+ 	//var url = "http://localhost/stepapp/old_dashboard_api/tribal_api/Tribal-dashboard/new/principal/edufun.php?id="+userid+"&grade="+grade;
+ 	//alert(url);
+ 	window.location.href=url;
 });
 
+	var val = integer_to_roman(10);
+	alert(val);
+
+function integer_to_roman(num) {
+	if (typeof num !== 'number')
+	return false;
+	var digits = String(+num).split(""),
+	key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+	"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+	"","I","II","III","IV","V","VI","VII","VIII","IX"],
+	roman_num = "",
+	i = 3;
+	while (i--)
+	roman_num = (key[+digits.pop() + (i * 10)] || "") + roman_num;
+	return Array(+digits.join("") + 1).join("M") + roman_num;
+}
 
 </script>

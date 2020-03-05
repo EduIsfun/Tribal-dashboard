@@ -84,7 +84,8 @@ include('functions.php');
         foreach ($user_array as $user){
             // echo "<pre>"; print_r($user); echo "</pre>"; //die('end of code');
             $nestedData['id'] = $page_count;
-            $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'" target="_blank">'.$user['name'].'  </a></span>';  
+            $url_grade=$user['class'];
+            $nestedData['fullname'] = '<span class="span_inline" style="color:#333;font-size:14px;"> <img src="images/green.png" alt="icon"> &nbsp; &nbsp; <a href="edufun.php?id='.$user['user_id'].'&grade='.$url_grade.'" target="_blank">'.$user['name'].'  </a></span>';  
             if(is_numeric($user['class'])){
                 $nestedData['class'] = '<span>'.ConverToRoman($user['class']).'</span>';
             }else{
