@@ -78,17 +78,24 @@ curl_close($curl);
 $student_detail='';
 $global_rank='';
 $class_rank='';
+$student_id='';
 //$data_status=false;
 if (array_key_exists('student_detail', $response)) {
 	$student_detail=$response['student_detail'][0]['_source'];
 	$global_rank=$response['global_rank'];
 	$class_rank=$response['class_rank'];
+	$latest_grade=$student_detail['grade'];
+	$_SESSION['latest_grade']=$latest_grade;
+
 }
 else
 {
-	//$data_status=true;
-	echo "<pre>"; echo "No Data Found"; echo "</pre>"; 
-	exit;
+
+	$latest_grade=$_SESSION['latest_grade'];
+	$url="http://www.eduisfun.in/dashboard/new/principal/edufun.php?id=$currentUser&grade=$latest_grade";
+
+	//$url="http://localhost/stepapp/old_dashboard_api/tribal_api/Tribal-dashboard/new/principal/edufun.php?id=$currentUser&grade=$latest_grade";
+	header("location:".$url);
 }
 //echo "<pre>"; print_r($student_detail); echo "</pre>"; 
 ?>
@@ -791,9 +798,6 @@ $("#gradeenabled").change(function() {
  	//alert(url);
  	window.location.href=url;
 });
-
-	var val = integer_to_roman(10);
-	alert(val);
 
 function integer_to_roman(num) {
 	if (typeof num !== 'number')
