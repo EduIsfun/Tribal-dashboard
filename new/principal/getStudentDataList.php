@@ -23,14 +23,14 @@ include('functions.php');
     $classid = isset($post_data['classid'])?$post_data['classid']:'';
     $subject_id = isset($post_data['subject_id'])?$post_data['subject_id']:'';
     $page_no = ($start/10)+1;
-    // echo "<pre>"; print_r($page_no); echo "</pre>"; die('end of code');
+    //echo "<pre>"; print_r($page_no); echo "</pre>"; die('end of code');
     $order = isset($post_data['order'])?$columns[$post_data['order'][0]['column']]:'';
     $dir = isset($post_data['order'][0]['dir'])?$post_data['order'][0]['dir']:'';
     $page_count = 1;
     if($start>0){
         $page_count=$start+1;    
     }
-    // echo "<pre>"; print_r($page_count); echo "</pre>"; die('end of code');
+    //echo "<pre>"; print_r($page_count); echo "</pre>"; die('end of code');
     if(empty($post_data['search']['value'])){
         $url_condition = '';
         if($classid != 'all'){
@@ -39,6 +39,7 @@ include('functions.php');
         if(!empty($subject_id)){
             $url_condition .= '&subjectId='.$subject_id;
         }
+        $page_no='all';
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
         $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_no."".$url_condition;
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
@@ -59,7 +60,7 @@ include('functions.php');
         ));
 
         $response = json_decode(curl_exec($curl),true);
-        // echo "<pre>"; print_r($response); echo "</pre>"; die('end of code');
+        //echo "<pre>"; print_r($response); echo "</pre>"; die('end of code');
         $err = curl_error($curl);
         curl_close($curl);
 
@@ -71,7 +72,7 @@ include('functions.php');
         // echo "<pre>"; print_r($user_array); echo "</pre>"; die('end of code api_response');
         $totalData = isset($response['school']['total_count'])?$response['school']['total_count']:0;
         $totalFiltered = $totalData;
-        // echo "<pre>"; print_r($posts); echo "</pre>"; die("end of posts yoyo");
+        // echo "<pre>"; print_r($totalFiltered); echo "</pre>"; die("end of posts yoyo");
     }else {
         $search = $post_data['search']['value']; 
         // $posts =  $this->Student_Model->studentGradeSearch($limit,$start,$search,$order,$dir);
@@ -100,16 +101,16 @@ include('functions.php');
             $nestedData['rank'] = '<div class="dark"><span>'.$user['emrs_rank'].'</span></div>';
             // echo "<pre>"; print_r($nestedData); echo "</pre>"; die('end of code');
             $data[] = $nestedData;
-        $page_count++;
+            $page_count++;
         }
     }
-    // echo "<pre>"; print_r($data); echo "</pre>"; die('end of code');
+    //echo "<pre>"; print_r($totalFiltered); echo "</pre>"; die('end of code');
     $json_data = array(
-                "draw"            => isset($post_data['draw'])?intval($post_data['draw']):'',  
-                "recordsTotal"    => intval($totalData),  
-                "recordsFiltered" => intval($totalFiltered), 
-                "data"            => $data   
-                );
+        "draw"            => isset($post_data['draw'])?intval($post_data['draw']):'',  
+        "recordsTotal"    => intval($totalData),  
+        "recordsFiltered" => intval($totalFiltered), 
+        "data"            => $data
+    );
         
     echo json_encode($json_data);
 

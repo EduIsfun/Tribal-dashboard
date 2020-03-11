@@ -235,7 +235,7 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
 	"searching": true,
     "responsive": true,
     "processing": true,
-    "serverSide": true,
+    "serverSide": false,
     "ajax":{
         "url": 'getStudentDataList.php',
         "dataType": "json",
