@@ -39,11 +39,10 @@ include('functions.php');
         if(!empty($subject_id)){
             $url_condition .= '&subjectId='.$subject_id;
         }
-        //$page_no='all';
+        $page_no='all';
         // $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/dummyapi?schoolId=".$school_name."&page=".$page_count;
         $url = "https://0e3r24lsu5.execute-api.ap-south-1.amazonaws.com/Prod/tribalhomepageapi?schoolId=".$school_name."&page=".$page_no."".$url_condition;
-
-        //echo $url;
+        
         // echo "<pre>"; print_r($url); echo "</pre>"; die('end of code');
         $curl = curl_init();
         curl_setopt_array($curl, array(

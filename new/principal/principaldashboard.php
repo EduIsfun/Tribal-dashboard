@@ -121,6 +121,22 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 					</div>
 				</div> -->
 				<!-- <table id="user_chapter_list" class="table sub_table1 main-table dataTable no-footer" style="width: 100%"></table> -->
+
+				<table id="user_list_table1" class="table sub_table1 main-table dataTable no-footer table-bordered" style="width: 100%; display: none;">
+					<thead id="example1_head1">
+						<tr role="row" id="example1_head_row1">
+							<th class="sorting_asc" tabindex="0" aria-controls="example11" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Sr.No.: activate to sort column descending" style="width: 39px;">Sr.No.</th>
+							<th class="sorting" tabindex="0" aria-controls="example11" rowspan="1" colspan="1" aria-label="Name: 
+							activate to sort column ascending" style="width: 240px;">Name</th>
+							<th id="example1_class1" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class</th>
+							<th class="sorting" tabindex="0" aria-controls="example11" rowspan="1" colspan="1" aria-label="EMRS Rank: activate to sort column ascending" style="width: 131px;">EMRS Rank</th>
+							<th class="sorting" tabindex="0" aria-controls="example11" rowspan="1" colspan="1" aria-label="Time Spent: activate to sort column ascending" style="width: 166px;">Time Spent</th>
+							<th class="sorting" tabindex="0" aria-controls="example11" rowspan="1" colspan="1" aria-label="Overall Grade: activate to sort column ascending" style="width: 98px;">Grade</th>
+						</tr>
+					</thead>
+				</table>
+
+
 				<table id="user_list_table" class="table sub_table1 main-table dataTable no-footer table-bordered" style="width: 100%">
 					<thead id="example1_head">
 						<tr role="row" id="example1_head_row">
@@ -135,6 +151,8 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 						</tr>
 					</thead>
 				</table>
+
+				
 				<table id="chapter_user_table" class="table sub_table1 main-table dataTable no-footer" style="width: 100%">
 					<thead id="chapter_table_head"></thead>
 				</table>
@@ -170,7 +188,9 @@ $classid =isset($_POST['classid'])?$_POST['classid']:'I';
 
 </html>
 <script>
+
 var finaltitle="";
+
 function getImageData() {
 	var canvas = document.getElementsByClassName('canvasjs-chart-canvas');
 	return dataURL = canvas[0].toDataURL();
@@ -180,13 +200,14 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
 	var school_id = $('#school_id').val();
     school_name = school_id.replace(/\,/g, '');
 	school_name = school_name.replace(/\ /g, '_');
-	console.log(school_name);
+	//console.log(school_name);
 	// school_name = 'EMRS_Shendegaon';
  	var board_id = 7;
  	var table_column = "";
-	console.log(classid);
+	//console.log(classid);
  	if(classid == 'all'){
  		$("#class_rank_th").remove();
+ 		$("#class_rank_th1").remove();
  		table_column = [
 	        { "data": "id" },
 	        { "data": "fullname" },
@@ -197,6 +218,8 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
 	    ];
  	}else{
  		$("#example1_class").after('<th id="class_rank_th" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>');
+
+ 		$("#example1_class1").after('<th id="class_rank_th1" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 37px;">Class Rank</th>');
  		// $("#class_rank_th").show();
  		table_column = [
 	        { "data": "id" },
@@ -230,58 +253,59 @@ function getClassStudentData(classid,subject_id='',subject_name=''){
 
 	$('#chapter_user_table_wrapper').hide();
 	$('#user_list_table').DataTable().clear().destroy();
+	$('#user_list_table1').DataTable().clear().destroy();
 
-	$('#user_list_table').DataTable( {
+	$('#user_list_table').DataTable({
 	"searching": true,
     "responsive": true,
     "processing": true,
-    "serverSide": false,
+    "serverSide": true,
+    "ordering": false,
+    "info":     false,
+    "lengthChange": false,
     "ajax":{
         "url": 'getStudentDataList.php',
         "dataType": "json",
         "type": "POST",
         "data":{'school_id': school_name,'board_id':board_id,'classid':classid,'subject_id':subject_id}
 	},
-    "dom": 'Bfrtip',
-    "buttons": [
-    	{
-    		extend: 'pdfHtml5',
-            //pageSize: 'A4',//A0 is the largest A5 smallest(A0,A1,A2,A3,legal,A4,A5,letter))
-            title: finaltitle,
-			customize: function ( doc ) {
-				doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-				doc.content.splice( 1, 0, {
-					margin: [ 12, 0, 0, 12 ],
-					alignment: 'center',
-					image: getImageData(),
-					width: 560,
-					height: 250
-				});
-			}
-			// exportOptions: {
-			// 	columns: 'th:not(:first-child)'
-			// }
-		}
-        //'csv', 'excel', 'pdf'
-    ],
     "columns": table_column
-});
+	});
 
-// $('#user_list_table').DataTable({
-//       "searching": false,
-//       "responsive": true,
-//       "processing": true,
-//       "serverSide": true,
-//       "ajax":{
-//       "url": 'getStudentDataList.php',
-//       "dataType": "json",
-//       "type": "POST",
-//       "data":{'school_id': school_name,'board_id':board_id,'classid':classid}
-//   },
-//   "columns": table_column
-//   });	
-// }
-
+	$('#user_list_table1').DataTable({
+		"searching": false,
+	    "responsive": true,
+	    "processing": false,
+	    "serverSide": false,
+	    "paging":   false,
+        "ordering": false,
+        "info":     false,
+	    "ajax":{
+	        "url": 'getStudentDataList_all.php',
+	        "dataType": "json",
+	        "type": "POST",
+	        "data":{'school_id': school_name,'board_id':board_id,'classid':classid,'subject_id':subject_id}
+		},
+	    "dom": 'Bfrtip',
+	    "buttons": [
+	    	{
+	    		extend: 'pdfHtml5',
+	            //pageSize: 'A4',//A0 is the largest A5 smallest(A0,A1,A2,A3,legal,A4,A5,letter))
+	            title: finaltitle,
+				customize: function ( doc ) {
+					doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+					doc.content.splice( 1, 0, {
+						margin: [ 12, 0, 0, 12 ],
+						alignment: 'center',
+						image: getImageData(),
+						width: 560,
+						height: 250
+					});
+				}
+			}
+	    ],
+	    "columns": table_column
+	});
 }
 
 function romanToInt(str1) {
@@ -780,6 +804,8 @@ function getChapterDatatable(school_name,chapter_id){
 	$("#example1_head_row").hide();
 	$("#example1_head_chapter").hide();
 	$("#user_list_table_wrapper").hide();	
+	$("#example1_head_row1").hide();
+	$("#example1_head_chapter1").hide();
 	// $('#chapter_user_table_wrapper').empty();
 
 	$.ajax({
@@ -1288,6 +1314,9 @@ function getdownload(){
 $(document).ready(function(){
   $(".dropdown-toggle").dropdown();
 });
+
+
+
 </script>
 <?php
 $time = microtime();
