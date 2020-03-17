@@ -469,6 +469,7 @@ function changeClass(classid) {
 	$("#class_id").val(classid);
 	$('#chapter').empty('');
 	$("#class_rank_th").remove();
+	$("#class_rank_th1").remove();
 
     var subject_id = ( $('#subject_id').val() ) ? $('#subject_id').val() : '';
     var school_id = $('#school_id').val();
@@ -658,6 +659,7 @@ function changeSubject(subject_id,subject_name=''){
 		subject_id='';
 	}
     $("#class_rank_th").remove();
+    $("#class_rank_th1").remove();
 	$('#chapter').empty('');
     //console.log('subject_id' + subject_id);
 	var classid=$('#class_id').val();
